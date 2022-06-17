@@ -10,7 +10,7 @@ import Tip from '../Tip/Tip'
 import Tooltip from '../Tooltip/Tooltip'
 import ValidationTemplate from '../../elements/ValidationTemplate/ValidationTemplate'
 
-import { checkPatternsValidity } from '../../utils/validationService'
+import { checkPatternsValidity } from '../../utils/validation.util'
 import { useDetectOutsideClick } from '../../hooks/useDetectOutsideClick'
 
 import { INPUT_LINK, INPUT_VALIDATION_RULES } from '../../types'
@@ -83,6 +83,12 @@ const FormInput = React.forwardRef(
         meta.invalid && (meta.validating || meta.modified || (meta.submitFailed && meta.touched))
       )
     }, [meta.invalid, meta.modified, meta.submitFailed, meta.touched, meta.validating])
+
+    useEffect(() => {
+      if (meta.valid && showValidationRules) {
+        setShowValidationRules(false)
+      }
+    }, [meta.valid, showValidationRules])
 
     useEffect(() => {
       if (showValidationRules) {
@@ -160,20 +166,16 @@ const FormInput = React.forwardRef(
       const valueToValidate = value ?? ''
       let validationError = null
 
-      if (!isEmpty(validationRules) && valueToValidate !== typedValue) {
+      if (!isEmpty(validationRules)) {
         const [newRules, isValidField] = checkPatternsValidity(rules, valueToValidate)
         const invalidRules = newRules.filter((rule) => !rule.isValid)
 
         if (!isValidField) {
           validationError = invalidRules.map((rule) => ({ name: rule.name, label: rule.label }))
         }
-
-        if ((isValidField && showValidationRules) || (required && valueToValidate === '')) {
-          setShowValidationRules(false)
-        }
       }
 
-      if (!validationError) {
+      if (isEmpty(validationError)) {
         if (pattern && !validationPattern.test(valueToValidate)) {
           validationError = { name: 'pattern', label: invalidText }
         } else if (valueToValidate.startsWith(' ')) {

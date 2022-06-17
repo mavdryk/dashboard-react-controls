@@ -17,7 +17,7 @@ const Wizard = ({
   children,
   className,
   confirmClose,
-  FormState,
+  formState,
   isWizardOpen,
   onWizardResolve,
   onWizardSubmit,
@@ -57,7 +57,7 @@ const Wizard = ({
   }
 
   const handleOnClose = () => {
-    if (confirmClose && FormState && FormState.dirty) {
+    if (confirmClose && formState && formState.dirty) {
       openPopUp(ConfirmDialog, {
         cancelButton: {
           label: 'Cancel',
@@ -77,10 +77,10 @@ const Wizard = ({
   }
 
   const handleSubmit = () => {
-    FormState.handleSubmit()
-    if (FormState.valid) {
+    formState.handleSubmit()
+    if (formState.valid) {
       if (isLastStep) {
-        onWizardSubmit(FormState.values)
+        onWizardSubmit(formState.values)
       } else {
         goToNextStep()
       }
@@ -96,7 +96,7 @@ const Wizard = ({
     />,
     <Button
       onClick={handleSubmit}
-      disabled={FormState.submitting || (FormState.invalid && FormState.submitFailed)}
+      disabled={formState.submitting || (formState.invalid && formState.submitFailed)}
       label={isLastStep ? submitButtonLabel : 'Next'}
       type="button"
       variant={SECONDARY_BUTTON}
@@ -107,7 +107,7 @@ const Wizard = ({
     if (stepsConfig[activeStepNumber]?.getActions) {
       return stepsConfig[activeStepNumber]
         .getActions({
-          FormState,
+          formState,
           goToNextStep,
           goToPreviousStep,
           handleOnClose,
@@ -145,7 +145,7 @@ Wizard.defaultProps = {
 Wizard.propsTypes = {
   className: PropTypes.string,
   confirmClose: PropTypes.bool,
-  FormState: PropTypes.object.isRequired,
+  formState: PropTypes.object.isRequired,
   isWizardOpen: PropTypes.bool.isRequired,
   onWizardResolve: PropTypes.func.isRequired,
   onWizardSubmit: PropTypes.func.isRequired,
