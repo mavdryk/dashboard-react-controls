@@ -24,18 +24,6 @@
           }
         }
       }
-
-      &.without-border {
-        .form-field__caret {
-          display: none;
-        }
-
-        &:hover {
-          .form-field__caret {
-            display: block;
-          }
-        }
-      }
     }
 
     &__select {

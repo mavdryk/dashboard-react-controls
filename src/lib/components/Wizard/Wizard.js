@@ -60,6 +60,7 @@ const Wizard = ({
 
   const handleSubmit = () => {
     formState.handleSubmit()
+
     if (formState.valid) {
       if (isLastStep) {
         onWizardSubmit(formState.values)

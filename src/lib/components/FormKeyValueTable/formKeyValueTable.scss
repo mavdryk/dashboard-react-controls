@@ -98,20 +98,4 @@ $actionsBlockWidth: 72px;
       }
     }
   }
-
-  .input-wrapper {
-    width: 100%;
-
-    .input {
-      width: 100%;
-
-      &_edit {
-        border: $primaryBorder;
-      }
-
-      &_invalid {
-        border: $errorBorder;
-      }
-    }
-  }
 }
