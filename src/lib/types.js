@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import {
   DANGER_BUTTON,
   LABEL_BUTTON,
-  MODAL_SM,
-  MODAL_MD,
+  MODAL_FULL,
   MODAL_LG,
+  MODAL_MD,
+  MODAL_SM,
   PRIMARY_BUTTON,
   SECONDARY_BUTTON,
   TERTIARY_BUTTON
@@ -24,7 +25,7 @@ export const POP_UP_CUSTOM_POSITION = PropTypes.shape({
   position: PropTypes.oneOf(['top-left', 'top-right', 'bottom-left', 'bottom-right'])
 })
 
-export const MODAL_SIZES = PropTypes.oneOf([MODAL_SM, MODAL_MD, MODAL_LG])
+export const MODAL_SIZES = PropTypes.oneOf([MODAL_SM, MODAL_MD, MODAL_LG, MODAL_FULL])
 
 export const CONFIRM_DIALOG_CANCEL_BUTTON = PropTypes.shape({
   handler: PropTypes.func,

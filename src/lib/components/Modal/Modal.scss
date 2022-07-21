@@ -24,6 +24,16 @@
     &-lg {
       width: 1400px;
     }
+
+    &-full {
+      width: 95vw;
+      height: 95vh;
+    }
+  }
+
+  &-full {
+    width: 90vw;
+    height: 90vh;
   }
 
   &__content {
@@ -52,8 +62,8 @@
 
     &-title {
       color: $primary;
-      font-size: 2em;
-      font-weight: 400;
+      font-size: 24px;
+      font-weight: bold;
       text-transform: capitalize;
       margin: 0;
     }
@@ -69,9 +79,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     flex: 1 0;
-    flex-basis: 0;
-    padding: 1.5rem 2rem 0;
-    margin-bottom: 1rem;
+    padding: 1.5rem 1.5rem 1rem;
   }
 
   &__footer {
