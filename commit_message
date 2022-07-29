@@ -1,7 +1,6 @@
 
 
-Create a new dist version 0.0.11
+Create a new dist version 0.0.14
 
 Collecting:
-- Fix [Modal] on navigation back (#28)
-- Fix [Modal] remove create portal (#27)
+- fix mixin name in select (#42)

@@ -34,7 +34,6 @@
       &-value {
         display: block;
         font-size: 15px;
-        text-transform: capitalize;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -55,6 +54,7 @@
     .pop-up-dialog {
       width: 100%;
       padding: 0;
+      border-radius: 0;
 
       &__header {
         display: none;
@@ -68,7 +68,7 @@
         color: $mulledWineTwo;
         background-color: $white;
         border: $primaryBorder;
-        border-radius: 2px;
+        border-radius: 4px;
         box-shadow: $filterShadow;
       }
 

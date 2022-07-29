@@ -13,3 +13,4 @@ export { default as TextTooltipTemplate } from './TooltipTemplate/TextTooltipTem
 export { default as Tip } from './Tip/Tip'
 export { default as Tooltip } from './Tooltip/Tooltip'
 export { default as Wizard } from './Wizard/Wizard'
+export { default as FormCombobox } from './FormCombobox/FormCombobox'
