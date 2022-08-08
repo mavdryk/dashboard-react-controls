@@ -20,6 +20,7 @@ import './formKeyValueTable.scss'
 const FormKeyValueTable = ({
   addNewItemLabel,
   className,
+  defaultKey,
   disabled,
   formState,
   isKeyRequired,
@@ -71,9 +72,9 @@ const FormKeyValueTable = ({
     if (!disabled) {
       applyOrDiscardOrDelete(event, fields)
 
-      formState.form.mutators.push(name, { key: '', value: '' })
+      formState.form.mutators.push(name, { key: defaultKey || '', value: '' })
       setSelectedItem({
-        key: '',
+        key: defaultKey || '',
         value: '',
         isNew: true,
         index: formState.values[name]?.length ?? 0
@@ -252,6 +253,7 @@ FormKeyValueTable.defaultProps = {
   addNewItemLabel: 'Add new item',
   className: '',
   disabled: false,
+  defaultKey: '',
   isKeyRequired: true,
   isValueRequired: true,
   keyHeader: 'Key',
@@ -265,6 +267,7 @@ FormKeyValueTable.propTypes = {
   addNewItemLabel: PropTypes.string,
   className: PropTypes.string,
   disabled: PropTypes.bool,
+  defaultKey: PropTypes.string,
   formState: PropTypes.shape({}).isRequired,
   isKeyRequired: PropTypes.bool,
   isValueRequired: PropTypes.bool,

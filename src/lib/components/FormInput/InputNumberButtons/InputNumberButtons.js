@@ -64,7 +64,7 @@ InputNumberButtons.defaultProps = {
   disabled: false,
   min: null,
   max: null,
-  step: '1'
+  step: 1
 }
 
 InputNumberButtons.propTypes = {
@@ -72,7 +72,7 @@ InputNumberButtons.propTypes = {
   min: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   max: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func.isRequired,
-  step: PropTypes.string,
+  step: PropTypes.number,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 }
 

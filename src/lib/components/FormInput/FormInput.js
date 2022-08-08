@@ -158,7 +158,7 @@ const FormInput = React.forwardRef(
         }))
       )
     }, [meta.error])
-    const validateField = (value) => {
+    const validateField = (value, allValues) => {
       let valueToValidate = isNil(value) ? '' : String(value)
       if ((!valueToValidate && !required) || disabled) return
 
@@ -176,11 +176,17 @@ const FormInput = React.forwardRef(
       if (isEmpty(validationError)) {
         if (inputProps.type === 'number') {
           if (inputProps.max && +valueToValidate > +inputProps.max) {
-            validationError = { name: 'maxValue', label: `Max value is ${inputProps.max}` }
+            validationError = {
+              name: 'maxValue',
+              label: `The maximum value should be ${inputProps.max}`
+            }
           }
 
           if (inputProps.min && +valueToValidate < +inputProps.min) {
-            validationError = { name: 'minValue', label: `Min value is ${inputProps.min}` }
+            validationError = {
+              name: 'minValue',
+              label: `The minimum value should be ${inputProps.min}`
+            }
           }
         }
         if (pattern && !validationPattern.test(valueToValidate)) {
@@ -193,7 +199,7 @@ const FormInput = React.forwardRef(
       }
 
       if (!validationError && validator) {
-        validationError = validator(value)
+        validationError = validator(value, allValues)
       }
 
       return validationError
@@ -328,7 +334,7 @@ FormInput.defaultProps = {
   pattern: null,
   placeholder: '',
   required: false,
-  step: '1',
+  step: 1,
   suggestionList: [],
   tip: '',
   type: 'text',
@@ -357,7 +363,7 @@ FormInput.propTypes = {
   pattern: PropTypes.string,
   placeholder: PropTypes.string,
   required: PropTypes.bool,
-  step: PropTypes.string,
+  step: PropTypes.number,
   suggestionList: PropTypes.arrayOf(PropTypes.string),
   tip: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   type: PropTypes.string,
