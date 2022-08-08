@@ -71,3 +71,13 @@ export const INPUT_VALIDATION_RULES = PropTypes.arrayOf(
     isValid: PropTypes.bool
   })
 )
+
+export const FORM_TABLE_EDITING_ITEM = PropTypes.shape({
+  data: PropTypes.shape({}).isRequired,
+  ui: PropTypes.shape({
+    isNew: PropTypes.bool,
+    index: PropTypes.number.isRequired,
+    fieldsPath: PropTypes.string.isRequired
+  }).isRequired,
+  [PropTypes.string]: PropTypes.any
+})
