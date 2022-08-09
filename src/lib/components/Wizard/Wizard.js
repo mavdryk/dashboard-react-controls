@@ -131,7 +131,9 @@ const Wizard = ({
       title={title}
     >
       <WizardSteps activeStepNumber={activeStepNumber} jumpToStep={jumpToStep} steps={stepsMenu} />
-      <div className="wizard-form__content">{activeStepTemplate}</div>
+      <div className="wizard-form__content-container">
+        <div className="wizard-form__content">{activeStepTemplate}</div>
+      </div>
     </Modal>
   )
 }
@@ -158,6 +160,6 @@ Wizard.propsTypes = {
   submitButtonLabel: PropTypes.string
 }
 
-Wizard.Step = ({ children }) => children
+Wizard.Step = ({children}) => children
 
 export default Wizard
