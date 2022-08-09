@@ -1,6 +1,7 @@
 
 
-Create a new dist version 0.0.14
+Create a new dist version 0.0.16
 
 Collecting:
-- fix mixin name in select (#42)
+- Impl [Models] Revamp Register model wizard (#48)
+- Fix [wizard] css and action button (#49)

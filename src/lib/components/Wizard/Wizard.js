@@ -3,13 +3,11 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import Button from '../Button/Button'
-import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
 import Modal from '../Modal/Modal'
 import WizardSteps from './WizardSteps/WizardSteps'
 
-import { MODAL_MD, SECONDARY_BUTTON, TERTIARY_BUTTON } from '../../constants'
+import { MODAL_MD, SECONDARY_BUTTON } from '../../constants'
 import { MODAL_SIZES, WIZARD_STEPS_CONFIG } from '../../types'
-import { openPopUp } from '../../utils/common.util'
 
 import './Wizard.scss'
 
@@ -41,7 +39,11 @@ const Wizard = ({
   }, [activeStepNumber, totalSteps])
 
   const stepsMenu = useMemo(() => {
-    return stepsConfig?.map((step) => ({ id: step.id, label: step.label })) || []
+    return (
+      stepsConfig
+        ?.filter((step) => !step.isHidden)
+        .map((step) => ({ id: step.id, label: step.label })) || []
+    )
   }, [stepsConfig])
 
   const wizardClasses = classNames('wizard-form', className)
@@ -54,26 +56,6 @@ const Wizard = ({
 
   const jumpToStep = (idx) => {
     return setActiveStepNumber(idx)
-  }
-
-  const handleOnClose = () => {
-    if (formState && formState.dirty) {
-      openPopUp(ConfirmDialog, {
-        cancelButton: {
-          label: 'Cancel',
-          variant: TERTIARY_BUTTON
-        },
-        confirmButton: {
-          handler: onWizardResolve,
-          label: 'OK',
-          variant: SECONDARY_BUTTON
-        },
-        header: 'Are you sure?',
-        message: 'All changes will be lost'
-      })
-    } else {
-      onWizardResolve()
-    }
   }
 
   const handleSubmit = () => {
@@ -111,7 +93,7 @@ const Wizard = ({
           formState,
           goToNextStep,
           goToPreviousStep,
-          handleOnClose,
+          onWizardResolve,
           handleSubmit
         })
         .map((action) => <Button {...action} />)
@@ -124,7 +106,7 @@ const Wizard = ({
     <Modal
       actions={renderModalActions()}
       className={wizardClasses}
-      onClose={handleOnClose}
+      onClose={onWizardResolve}
       location={location}
       show={isWizardOpen}
       size={size}
