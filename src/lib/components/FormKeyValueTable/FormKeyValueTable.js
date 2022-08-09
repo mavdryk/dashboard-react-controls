@@ -3,19 +3,10 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { FieldArray } from 'react-final-form-arrays'
 
-import Tooltip from '../Tooltip/Tooltip'
-import TextTooltipTemplate from '../TooltipTemplate/TextTooltipTemplate'
-import RoundedIcon from '../RoundedIcon/RoundedIcon'
-import FormInput from '../FormInput/FormInput'
-import FormSelect from '../FormSelect/FormSelect'
+import { FormSelect, FormInput, Tooltip, TextTooltipTemplate } from '../../components'
+import {FormActionButton, FormRowActions} from '../../elements'
 
-import { ReactComponent as Close } from '../../images/close.svg'
-import { ReactComponent as Edit } from '../../images/edit.svg'
-import { ReactComponent as Plus } from '../../images/plus.svg'
-import { ReactComponent as Delete } from '../../images/delete.svg'
-import { ReactComponent as Checkmark } from '../../images/checkmark2.svg'
-
-import './formKeyValueTable.scss'
+import { useFormTable } from '../../hooks/useFormTable.hook'
 
 const FormKeyValueTable = ({
   addNewItemLabel,
@@ -141,7 +132,7 @@ const FormKeyValueTable = ({
                 onClick={(...addRowArgs) =>
                   addNewRow(...addRowArgs, {
                     data: {
-                      key: '',
+                      key: defaultKey || '',
                       value: ''
                     }
                   })
