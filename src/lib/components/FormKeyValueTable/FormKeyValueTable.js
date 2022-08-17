@@ -11,6 +11,7 @@ import { useFormTable } from '../../hooks/useFormTable.hook'
 const FormKeyValueTable = ({
   addNewItemLabel,
   className,
+  defaultKey,
   disabled,
   fieldsPath,
   formState,
@@ -131,7 +132,7 @@ const FormKeyValueTable = ({
                 onClick={(...addRowArgs) =>
                   addNewRow(...addRowArgs, {
                     data: {
-                      key: '',
+                      key: defaultKey || '',
                       value: ''
                     }
                   })
@@ -150,6 +151,7 @@ FormKeyValueTable.defaultProps = {
   addNewItemLabel: 'Add new item',
   className: '',
   disabled: false,
+  defaultKey: '',
   isKeyRequired: true,
   isValueRequired: true,
   keyHeader: 'Key',
@@ -163,6 +165,7 @@ FormKeyValueTable.propTypes = {
   addNewItemLabel: PropTypes.string,
   className: PropTypes.string,
   disabled: PropTypes.bool,
+  defaultKey: PropTypes.string,
   fieldsPath: PropTypes.string.isRequired,
   formState: PropTypes.shape({}).isRequired,
   isKeyRequired: PropTypes.bool,
