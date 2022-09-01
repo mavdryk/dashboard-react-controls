@@ -5,7 +5,8 @@ import { FieldArray } from 'react-final-form-arrays'
 import classnames from 'classnames'
 
 import HiddenChipsBlock from '../../elements/HiddenChipsBlock/HiddenChipsBlock'
-import { Tooltip, TextTooltipTemplate } from 'igz-controls/components'
+import TextTooltipTemplate from '../TooltipTemplate/TextTooltipTemplate'
+import Tooltip from '../Tooltip/Tooltip'
 
 import { isEveryObjectValueEmpty } from '../../utils/common.util'
 import { CHIP_OPTIONS } from '../../types'
@@ -152,7 +153,7 @@ const FormChipCellView = React.forwardRef(
                     {isEditMode && (
                       <button
                         className={buttonAddClassNames}
-                        onClick={e => handleAddNewChip(e, fields)}
+                        onClick={(e) => handleAddNewChip(e, fields)}
                       >
                         <Add />
                       </button>

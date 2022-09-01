@@ -39,6 +39,10 @@
         text-overflow: ellipsis;
       }
 
+      &-placeholder {
+        color: $spunPearl;
+      }
+
       &-sub_label {
         display: block;
         margin-left: 10px;

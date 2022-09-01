@@ -3,9 +3,11 @@ import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import { Field, useField } from 'react-final-form'
 
-import { Tip, Tooltip, TextTooltipTemplate } from 'igz-controls/components'
+import TextTooltipTemplate from '../TooltipTemplate/TextTooltipTemplate'
+import Tip from '../Tip/Tip'
+import Tooltip from '../Tooltip/Tooltip'
 
-import { ReactComponent as InvalidIcon } from 'igz-controls/images/invalid.svg'
+import { ReactComponent as InvalidIcon } from '../../images/invalid.svg'
 
 import './formTextarea.scss'
 
@@ -18,6 +20,7 @@ const TextArea = React.forwardRef(
       iconClass,
       invalidText,
       label,
+      maxLength,
       name,
       onBlur,
       onChange,
@@ -31,6 +34,7 @@ const TextArea = React.forwardRef(
   ) => {
     const { input, meta } = useField(name)
     const [isInvalid, setIsInvalid] = useState(false)
+    const [textAreaCount, setTextAreaCount] = useState(input.value.length)
     const textAreaRef = React.createRef()
 
     const formFieldClassNames = classnames('form-field-textarea', className)
@@ -64,6 +68,7 @@ const TextArea = React.forwardRef(
 
     const handleInputChange = (event) => {
       input.onChange(event)
+      setTextAreaCount(event.target.value.length)
       onChange && onChange(event.target.value)
     }
 
@@ -101,6 +106,7 @@ const TextArea = React.forwardRef(
                 <textarea
                   data-testid="textarea"
                   id={input.name}
+                  maxLength={maxLength}
                   ref={textAreaRef}
                   required={isInvalid || required}
                   {...{
@@ -132,6 +138,11 @@ const TextArea = React.forwardRef(
                 )}
               </div>
             </div>
+            {maxLength && (
+              <div className="form-field__counter">{`${maxLength - textAreaCount} ${
+                maxLength - textAreaCount !== 1 ? 'characters' : 'character'
+              } left`}</div>
+            )}
           </div>
         )}
       </Field>
@@ -147,6 +158,7 @@ TextArea.defaultProps = {
   textAreaIcon: null,
   invalidText: 'This field is invalid',
   label: '',
+  maxLength: null,
   onBlur: () => {},
   onChange: () => {},
   placeholder: '',
@@ -163,6 +175,7 @@ TextArea.propTypes = {
   textAreaIcon: PropTypes.element,
   invalidText: PropTypes.string,
   label: PropTypes.string,
+  maxLength: PropTypes.number,
   name: PropTypes.string.isRequired,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,

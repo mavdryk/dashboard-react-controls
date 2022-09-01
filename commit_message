@@ -1,7 +1,6 @@
 
 
-Create a new dist version 0.0.16
+Create a new dist version 0.0.18
 
 Collecting:
-- Impl [Models] Revamp Register model wizard (#48)
-- Fix [wizard] css and action button (#49)
+- Fix [UI][Feature Vector] Wrong presentation for description tooltips for long description text (#57)
