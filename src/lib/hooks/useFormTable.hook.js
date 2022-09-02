@@ -63,8 +63,10 @@ export const useFormTable = (formState) => {
       if (!get(formState?.errors, editingItem.ui.fieldsPath.split('.'), false)) {
         exitEditMode()
       } else {
+        const editingField = get(formState.values, editingItem.ui.fieldsPath.split('.'))[index]
+
         // Mark all empty fields as `modified` in order to highlight the error if the field is invalid
-        Object.entries(editingItem.data).forEach(([fieldName, fieldValue]) => {
+        Object.entries(editingField.data).forEach(([fieldName, fieldValue]) => {
           if (!fieldValue) {
             formState.form.mutators.setFieldState(
               `${editingItem.ui.fieldsPath}[${index}].data.${fieldName}`,
