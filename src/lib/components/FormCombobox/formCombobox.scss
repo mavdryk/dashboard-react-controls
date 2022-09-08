@@ -38,43 +38,6 @@
           display: flex;
           align-items: center;
         }
-
-        &-body {
-          top: 35px;
-          max-width: 220px;
-        }
-
-        &_open {
-          .form-field-combobox__select-body {
-            display: block;
-          }
-        }
-      }
-
-      &__dropdown {
-        position: absolute;
-        z-index: 5;
-        display: none;
-        padding: 0;
-        background-color: $white;
-        box-shadow: $previewBoxShadow;
-      }
-
-      &__list {
-        margin: 0;
-        padding: 0;
-        min-width: 140px;
-        list-style-type: none;
-
-        &-option {
-          padding: 8px 15px;
-          word-break: break-all;
-          cursor: pointer;
-
-          &:hover {
-            background-color: $alabaster;
-          }
-        }
       }
 
       &__input {
@@ -89,13 +52,59 @@
           }
         }
       }
-      &__search {
-        padding-left: 8px;
+    }
+  }
+}
 
-        &-wrapper {
-          display: flex;
-          padding: 5px;
-        }
+.form-field-combobox {
+  &__search {
+    width: 100%;
+    padding-left: 8px;
+
+    &-wrapper {
+      display: flex;
+      padding: 5px;
+    }
+  }
+
+  &__dropdown {
+    .pop-up-dialog {
+      width: 100%;
+      max-height: 400px;
+      padding: 0;
+      border-radius: 0;
+
+      &__header {
+        display: none;
+      }
+    }
+  }
+
+  &__select {
+    &-body {
+      max-width: 220px;
+    }
+
+    &_open {
+      .form-field-combobox__select-body {
+        display: block;
+      }
+    }
+  }
+
+  &__list {
+    margin: 0;
+    padding: 0;
+    min-width: 140px;
+    list-style-type: none;
+
+    &-option {
+      padding: 8px 15px;
+      word-break: break-all;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $alabaster;
       }
     }
   }
