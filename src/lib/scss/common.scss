@@ -151,6 +151,12 @@ textarea {
         padding: 3px;
       }
     }
+
+    &_multiline {
+      display: flex;
+      flex: 1;
+      flex-wrap: wrap;
+    }
   }
 
   .form-table__header-row,

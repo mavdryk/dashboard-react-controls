@@ -52,7 +52,7 @@ export const useFormTable = (formState) => {
         ui: {
           isNew: true,
           fieldsPath,
-          index: fields.value.length
+          index: fields.value?.length || 0
         }
       }
     })
@@ -63,18 +63,16 @@ export const useFormTable = (formState) => {
       if (!get(formState?.errors, editingItem.ui.fieldsPath.split('.'), false)) {
         exitEditMode()
       } else {
-        const editingField = get(formState.values, editingItem.ui.fieldsPath.split('.'))[index]
+        const errorField = get(formState.errors, editingItem.ui.fieldsPath.split('.'), {})[index]
 
         // Mark all empty fields as `modified` in order to highlight the error if the field is invalid
-        Object.entries(editingField.data).forEach(([fieldName, fieldValue]) => {
-          if (!fieldValue) {
-            formState.form.mutators.setFieldState(
-              `${editingItem.ui.fieldsPath}[${index}].data.${fieldName}`,
-              {
-                modified: true
-              }
-            )
-          }
+        Object.entries(errorField.data).forEach(([fieldName]) => {
+          formState.form.mutators.setFieldState(
+            `${editingItem.ui.fieldsPath}[${index}].data.${fieldName}`,
+            {
+              modified: true
+            }
+          )
         })
       }
     }
@@ -119,6 +117,7 @@ export const useFormTable = (formState) => {
     applyOrDiscardOrDelete(event)
 
     const editItem = fields.value[index]
+
     setEditingItem(() => {
       return { ...editItem, ui: { fieldsPath, index } }
     })

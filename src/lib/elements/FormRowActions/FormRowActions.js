@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { RoundedIcon } from '../../components'
 
-import {FORM_TABLE_EDITING_ITEM} from '../../types'
+import { FORM_TABLE_EDITING_ITEM } from '../../types'
 
 import { ReactComponent as Close } from '../../images/close.svg'
 import { ReactComponent as Edit } from '../../images/edit.svg'

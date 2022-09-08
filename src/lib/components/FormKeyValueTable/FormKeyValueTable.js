@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import { FieldArray } from 'react-final-form-arrays'
 
 import { FormSelect, FormInput, Tooltip, TextTooltipTemplate } from '../../components'
-import {FormActionButton, FormRowActions} from '../../elements'
+import { FormActionButton, FormRowActions } from '../../elements'
 
 import { useFormTable } from '../../hooks/useFormTable.hook'
 
