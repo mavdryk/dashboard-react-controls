@@ -142,6 +142,6 @@ Wizard.propsTypes = {
   submitButtonLabel: PropTypes.string
 }
 
-Wizard.Step = ({children}) => children
+Wizard.Step = ({ children }) => children
 
 export default Wizard
