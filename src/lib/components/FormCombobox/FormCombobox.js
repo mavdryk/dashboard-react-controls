@@ -46,7 +46,7 @@ const FormCombobox = ({
   const [inputValue, setInputValue] = useState(inputDefaultValue)
   const [selectValue, setSelectValue] = useState(selectDefaultValue)
   const [dropdownStyle, setDropdownStyle] = useState({
-    left: '0'
+    left: '0px'
   })
   const [showSelectDropdown, setShowSelectDropdown] = useState(false)
   const [showSuggestionList, setShowSuggestionList] = useState(false)
@@ -142,7 +142,8 @@ const FormCombobox = ({
   const handleSelectOptionClick = (selectedOption, option) => {
     if (selectedOption.id !== selectValue.id) {
       setSelectValue(selectedOption)
-      input.onChange(`${selectedOption.id}${inputValue}`)
+      input.onChange(selectedOption.id)
+      setInputValue('')
       onChange && onChange(selectedOption.id)
       setShowSelectDropdown(false)
       inputRef.current.disabled = false
@@ -208,7 +209,7 @@ const FormCombobox = ({
       setShowSuggestionList(false)
       setShowValidationRules(false)
       setDropdownStyle({
-        left: '0'
+        left: '0px'
       })
       setShowSelectDropdown(true)
       input.onFocus(new Event('focus'))
@@ -259,18 +260,7 @@ const FormCombobox = ({
     showSelectDropdown && 'form-field-combobox__icon_open',
     'form-field-combobox__icon'
   )
-  const selectClassNames = classnames(
-    'form-field-combobox__select',
-    'form-field__control',
-    showSelectDropdown && 'form-field-combobox__select_open',
-    selectValue.id.length <= 5 && selectValue.id.length !== 0 && 'form-field-combobox__select_short'
-  )
   const selectValueClassNames = classnames(selectValue.className)
-  const dropdownClassNames = classnames(
-    'form-field-combobox__dropdown',
-    'form-field-combobox__input-dropdown',
-    showSuggestionList && dropdownList.length > 0 && 'form-field-combobox__input-dropdown_visible'
-  )
 
   const wrapperClassNames = classnames(
     'form-field__wrapper',
@@ -281,14 +271,14 @@ const FormCombobox = ({
   )
 
   return (
-    <Field name={name} validate={validateField} initialValue={`${selectValue.id}${inputValue}`}>
+    <Field name={name} validate={validateField}>
       {({ input, meta }) => (
         <div className={comboboxClassNames} ref={comboboxRef}>
           <div className={wrapperClassNames}>
             <div className="form-field__icons">
               <Arrow className={iconClassNames} onClick={toggleSelect} />
             </div>
-            <div className={selectClassNames} ref={selectRef}>
+            <div className="form-field-combobox__select form-field__control" ref={selectRef}>
               <div className="form-field-combobox__select-header" onClick={toggleSelect}>
                 <span className={selectValueClassNames}>{selectValue.id}</span>
                 {selectValue.id.length === 0 && selectPlaceholder && (
@@ -308,12 +298,12 @@ const FormCombobox = ({
                     element: selectRef,
                     position: 'bottom-right'
                   }}
-                  className="form-field-combobox__select-body form-field-combobox__dropdown"
+                  className="form-field-combobox__dropdown form-field-combobox__dropdown-select"
                 >
-                  <ul className="form-field-combobox__list">
+                  <ul className="form-field-combobox__dropdown-list">
                     {selectOptions.map((option) => {
                       const selectOptionClassNames = classnames(
-                        'form-field-combobox__list-option',
+                        'form-field-combobox__dropdown-list-option',
                         option.className
                       )
 
@@ -348,7 +338,7 @@ const FormCombobox = ({
                   element: selectRef,
                   position: 'bottom-right'
                 }}
-                className={dropdownClassNames}
+                className="form-field-combobox__dropdown form-field-combobox__dropdown-suggestions"
                 style={{
                   ...dropdownStyle
                 }}
@@ -366,15 +356,15 @@ const FormCombobox = ({
                       <SearchIcon />
                     </div>
                   )}
-                  <ul className="form-field-combobox__list">
+                  <ul className="form-field-combobox__dropdown-list">
                     {searchIsFocused && dropdownList.length === 0 ? (
-                      <li className="form-field-combobox__list-option" key="no data">
+                      <li className="form-field-combobox__dropdown-list-option" key="no data">
                         No data
                       </li>
                     ) : (
                       dropdownList.map((value) => (
                         <li
-                          className="form-field-combobox__list-option"
+                          className="form-field-combobox__dropdown-list-option"
                           key={value.id}
                           onClick={() => handleSuggestionListOptionClick(value)}
                         >
