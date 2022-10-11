@@ -17,21 +17,21 @@
   @media screen and (min-width: 1200px) {
     width: 1000px;
 
-    &-sm {
+    &.modal-sm {
       width: 700px;
     }
 
-    &-lg {
+    &.modal-lg {
       width: 1400px;
     }
 
-    &-full {
+    &.modal-full {
       width: 95vw;
       height: 95vh;
     }
   }
 
-  &-full {
+  &.modal-full {
     width: 90vw;
     height: 90vh;
   }

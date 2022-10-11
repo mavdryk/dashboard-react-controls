@@ -47,8 +47,8 @@ const Wizard = ({
   }, [children, activeStepNumber])
 
   const totalSteps = useMemo(() => {
-    return React.Children.count(children) - 1 || 0
-  }, [children])
+    return stepsConfig.filter((stepConfig) => !stepConfig.isHidden).length - 1 || 0
+  }, [stepsConfig])
 
   const isLastStep = useMemo(() => {
     return activeStepNumber === totalSteps
@@ -103,8 +103,10 @@ const Wizard = ({
   ]
 
   const renderModalActions = () => {
-    if (stepsConfig[activeStepNumber]?.getActions) {
-      return stepsConfig[activeStepNumber]
+    const filteredStepsConfig = stepsConfig.filter((stepConfig) => !stepConfig.isHidden)
+
+    if (filteredStepsConfig[activeStepNumber]?.getActions) {
+      return filteredStepsConfig[activeStepNumber]
         .getActions({
           formState,
           goToNextStep,
