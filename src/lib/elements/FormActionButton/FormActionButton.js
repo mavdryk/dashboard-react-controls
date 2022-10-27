@@ -1,7 +1,7 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import { ReactComponent as Plus } from '../../images/plus.svg'
-import PropTypes from 'prop-types'
 
 const FormActionButton = ({ disabled, fields, fieldsPath, label, onClick }) => {
   return (

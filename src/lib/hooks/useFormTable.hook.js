@@ -14,7 +14,7 @@ export const useFormTable = (formState) => {
   //   },
   //   <anotherProperty>: <anotherPropertyValue>
   //   ui: {
-  //     isNew: true, // `true` if we are creating a new row, if we are editing it's `false
+  //     isNew: true, // `true` if we are creating a new row, if we are editing it's `false`
   //     fieldsPath, // the path where table data is placed in the `formState`
   //     index: fields.value.length // index of the editing row
   //   }
