@@ -1,7 +1,6 @@
 
 
-Create a new dist version 0.0.20
+Create a new dist version 0.0.25
 
 Collecting:
-- Impl [Storybook] Add new stories for components (#63)
-- Impl [Models] add label validation (#65)
+- Impl [ui] new error status codes (#76)
