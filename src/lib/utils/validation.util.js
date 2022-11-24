@@ -14,7 +14,7 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-import lodash from 'lodash'
+import lodash, { isEmpty } from 'lodash'
 
 import { validation as ValidationConstants } from '../constants'
 
@@ -77,15 +77,19 @@ export const required =
  * @function checkPatternsValidity
  * @param {Array} validationRules Array of Validation Rule Objects {name: "", lable: "", pattren: [Function || Regex]}
  * @param {string} value Field value to check validity
+ * @param {boolean} required Specified if the value should be validated
  * @returns {Array} [validationRules, isFieldValid] New validationRules With `isValid` property, `true` in case there is at least one failed validation rule, or `false` otherwise.
  */
-export const checkPatternsValidity = (validationRules, value) => {
-  const newRules = validationRules.map((rule) => ({
-    ...rule,
-    isValid: lodash.isFunction(rule.pattern)
-      ? rule.pattern(value)
-      : /* else, it is a RegExp */ rule.pattern.test(value)
-  }))
+export const checkPatternsValidity = (validationRules, value = '', required = true) => {
+  const newRules =
+    !required && isEmpty(value)
+      ? validationRules
+      : validationRules.map((rule) => ({
+          ...rule,
+          isValid: lodash.isFunction(rule.pattern)
+            ? rule.pattern(value)
+            : /* else, it is a RegExp */ rule.pattern.test(value)
+        }))
 
   return [newRules, !hasInvalidRule(newRules)]
 }
