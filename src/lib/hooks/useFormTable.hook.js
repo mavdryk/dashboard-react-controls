@@ -14,13 +14,14 @@ export const useFormTable = (formState) => {
   //   },
   //   <anotherProperty>: <anotherPropertyValue>
   //   ui: {
-  //     isNew: true, // `true` if we are creating a new row, if we are editing it's `false`
-  //     fieldsPath, // the path where table data is placed in the `formState`
-  //     index: fields.value.length // index of the editing row
+  //     isNew: <true|false>, // `true` if we are creating a new row, if we are editing it's `false`
+  //     fieldsPath: <"the.path">, // the path where table data is placed in the `formState`
+  //     index: <0|1|...> // index of the editing row
   //   }
   // }
   const [editingItem, setEditingItem] = useState(null)
   const editingItemRef = useRef(null)
+  const bottomScrollRef = useRef(null)
 
   useEffect(() => {
     editingItemRef.current = editingItem
@@ -56,12 +57,18 @@ export const useFormTable = (formState) => {
         }
       }
     })
+
+    scrollIntoView()
   }
 
   const applyChanges = (event, index) => {
     if (editingItem) {
       if (!get(formState?.errors, editingItem.ui.fieldsPath.split('.'), false)) {
         exitEditMode()
+
+        if (editingItem.ui.isNew) {
+          scrollIntoView()
+        }
       } else {
         const errorField = get(formState.errors, editingItem.ui.fieldsPath.split('.'), {})[index]
 
@@ -127,10 +134,19 @@ export const useFormTable = (formState) => {
     setEditingItem(null)
   }
 
+  const scrollIntoView = () => {
+    if (bottomScrollRef.current) {
+      setTimeout(() => {
+        bottomScrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      })
+    }
+  }
+
   return {
     addNewRow,
     applyChanges,
     applyOrDiscardOrDelete,
+    bottomScrollRef,
     deleteRow,
     discardChanges,
     discardOrDelete,

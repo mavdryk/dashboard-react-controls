@@ -345,6 +345,7 @@ const FormCombobox = ({
               </div>
               {showSelectDropdown && (
                 <PopUpDialog
+                  headerIsHidden
                   customPosition={{
                     element: selectRef,
                     position: 'bottom-right'
@@ -387,6 +388,7 @@ const FormCombobox = ({
             />
             {showSuggestionList && (dropdownList.length > 0 || searchIsFocused) && (
               <PopUpDialog
+                headerIsHidden
                 customPosition={{
                   element: selectRef,
                   position: 'bottom-right'

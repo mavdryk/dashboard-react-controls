@@ -40,8 +40,15 @@ const FormKeyValueTable = ({
   valueLabel
 }) => {
   const tableClassNames = classnames('form-table form-key-value-table', className)
-  const { editingItem, addNewRow, applyChanges, deleteRow, discardOrDelete, enterEditMode } =
-    useFormTable(formState)
+  const {
+    editingItem,
+    addNewRow,
+    applyChanges,
+    deleteRow,
+    discardOrDelete,
+    enterEditMode,
+    bottomScrollRef
+  } = useFormTable(formState)
 
   const uniquenessValidator = (fields, newValue) => {
     return !fields.value.some(({ data: { key } }, index) => {
@@ -82,6 +89,7 @@ const FormKeyValueTable = ({
                         density="dense"
                         name={`${contentItem}.data.key`}
                         required={isKeyRequired}
+                        focused={!keyOptions}
                         validationRules={[
                           {
                             name: 'uniqueness',
@@ -99,6 +107,7 @@ const FormKeyValueTable = ({
                       density="dense"
                       name={`${contentItem}.data.value`}
                       required={isValueRequired}
+                      focused={!!keyOptions}
                     />
                   </div>
                   <FormRowActions
@@ -140,22 +149,22 @@ const FormKeyValueTable = ({
               )
             })}
 
-            {!editingItem?.ui?.isNew && (
-              <FormActionButton
-                fields={fields}
-                disabled={disabled}
-                label={addNewItemLabel}
-                onClick={(...addRowArgs) =>
-                  addNewRow(...addRowArgs, {
-                    data: {
-                      key: defaultKey || '',
-                      value: ''
-                    }
-                  })
-                }
-                fieldsPath={fieldsPath}
-              />
-            )}
+            <FormActionButton
+              ref={bottomScrollRef}
+              disabled={disabled}
+              hidden={editingItem?.ui?.isNew}
+              fields={fields}
+              label={addNewItemLabel}
+              onClick={(...addRowArgs) =>
+                addNewRow(...addRowArgs, {
+                  data: {
+                    key: defaultKey || '',
+                    value: ''
+                  }
+                })
+              }
+              fieldsPath={fieldsPath}
+            />
           </>
         )}
       </FieldArray>

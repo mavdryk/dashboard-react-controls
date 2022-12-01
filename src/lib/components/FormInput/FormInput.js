@@ -151,7 +151,7 @@ const FormInput = React.forwardRef(
     }
 
     const handleInputBlur = (event) => {
-      fieldInput.onBlur(event)
+      fieldInput.onBlur && fieldInput.onBlur(event)
 
       if (!event.relatedTarget || !event.relatedTarget?.closest('.form-field__suggestion-list')) {
         setIsFocused(false)
@@ -159,7 +159,7 @@ const FormInput = React.forwardRef(
       }
     }
     const handleInputFocus = (event) => {
-      fieldInput.onFocus(event)
+      fieldInput.onFocus && fieldInput.onFocus(event)
       setIsFocused(true)
     }
 

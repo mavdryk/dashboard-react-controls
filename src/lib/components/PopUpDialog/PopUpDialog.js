@@ -57,13 +57,14 @@ const PopUpDialog = ({
         horizontalPosition === 'left' ? elementRect.right - popUpRect.width : elementRect.left
 
       popUpOverlayRef.current.style.top = `${topPosition}px`
+
       if (style.left) {
         popUpOverlayRef.current.style.left = `calc(${leftPosition}px + ${style.left})`
       } else {
         popUpOverlayRef.current.style.left = `${leftPosition}px`
       }
     }
-  }, [customPosition])
+  }, [customPosition, style.left])
 
   useLayoutEffect(() => {
     calculateCustomPopUpPosition()
