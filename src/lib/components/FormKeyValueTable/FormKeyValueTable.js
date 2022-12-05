@@ -89,7 +89,6 @@ const FormKeyValueTable = ({
                         density="dense"
                         name={`${contentItem}.data.key`}
                         required={isKeyRequired}
-                        focused={!keyOptions}
                         validationRules={[
                           {
                             name: 'uniqueness',
@@ -107,7 +106,6 @@ const FormKeyValueTable = ({
                       density="dense"
                       name={`${contentItem}.data.value`}
                       required={isValueRequired}
-                      focused={!!keyOptions}
                     />
                   </div>
                   <FormRowActions
