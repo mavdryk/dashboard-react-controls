@@ -47,12 +47,14 @@ const FormChip = React.forwardRef(
     const chipRef = React.useRef()
 
     useEffect(() => {
-      if (chipRef.current && setChipsSizes) {
-        setChipsSizes((state) => ({
-          ...state,
-          [chipIndex]: chipRef.current.getBoundingClientRect().width
-        }))
-      }
+      queueMicrotask(() => {
+        if (chipRef.current && setChipsSizes) {
+          setChipsSizes((state) => ({
+            ...state,
+            [chipIndex]: chipRef.current.getBoundingClientRect().width
+          }))
+        }
+      })
     }, [chipIndex, setChipsSizes])
 
     return (

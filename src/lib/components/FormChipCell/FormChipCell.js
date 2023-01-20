@@ -377,7 +377,7 @@ FormChipCell.defaultProps = {
   shortChips: false,
   validationRules: {},
   validator: () => {},
-  visibleChipsMaxLength: 'all'
+  visibleChipsMaxLength: null
 }
 
 FormChipCell.propTypes = {

@@ -50,6 +50,7 @@ const NewChipForm = React.forwardRef(
     ref
   ) => {
     const [chipData, setChipData] = useState({
+      isKeyOnly: chip.isKeyOnly,
       key: chip.key,
       value: chip.value,
       keyFieldWidth: 0,
@@ -66,8 +67,8 @@ const NewChipForm = React.forwardRef(
     const minWidthInput = 25
     const minWidthValueInput = 35
 
-    const refInputKey = React.useRef()
-    const refInputValue = React.useRef()
+    const refInputKey = React.useRef({})
+    const refInputValue = React.useRef({})
     const refInputContainer = React.useRef()
 
     const labelKeyClassName = classnames(
@@ -99,29 +100,24 @@ const NewChipForm = React.forwardRef(
         const currentWidthKeyInput = refInputKey.current.scrollWidth + 1
         const currentWidthValueInput = refInputValue.current.scrollWidth + 1
 
-        if (chipData.key && chipData.value) {
-          setChipData((prevState) => ({
-            ...prevState,
-            keyFieldWidth:
-              currentWidthKeyInput >= maxWidthInput
-                ? maxWidthInput
-                : currentWidthKeyInput <= minWidthInput
-                ? minWidthInput
-                : currentWidthKeyInput,
-            valueFieldWidth:
-              currentWidthValueInput >= maxWidthInput
-                ? maxWidthInput
-                : currentWidthValueInput <= minWidthValueInput
-                ? minWidthValueInput
-                : currentWidthValueInput
-          }))
-        } else {
-          setChipData((prevState) => ({
-            ...prevState,
-            keyFieldWidth: minWidthInput,
-            valueFieldWidth: minWidthValueInput
-          }))
-        }
+        const keyFieldWidth =
+          !chipData.key || currentWidthKeyInput <= minWidthInput
+            ? minWidthInput
+            : currentWidthKeyInput >= maxWidthInput
+            ? maxWidthInput
+            : currentWidthKeyInput
+        const valueFieldWidth =
+          !chipData.value || currentWidthValueInput <= minWidthValueInput
+            ? minWidthValueInput
+            : currentWidthValueInput >= maxWidthInput
+            ? maxWidthInput
+            : currentWidthValueInput
+
+        setChipData((prevState) => ({
+          ...prevState,
+          keyFieldWidth,
+          valueFieldWidth
+        }))
       }
     }, [
       chipData.key,
@@ -265,7 +261,7 @@ const NewChipForm = React.forwardRef(
             ...prevState,
             value: refInputValue.current.value,
             valueFieldWidth:
-              refInputValue.current.value.length <= 1
+              refInputValue.current.value?.length <= 1
                 ? minWidthValueInput
                 : currentWidthValueInput >= maxWidthInput
                 ? maxWidthInput
@@ -297,7 +293,7 @@ const NewChipForm = React.forwardRef(
         setValidationRules((prevState) => {
           return {
             ...prevState,
-            [selectedInput]: prevState[selectedInput].map((rule) => {
+            [selectedInput]: prevState[selectedInput]?.map((rule) => {
               return {
                 ...rule,
                 isValid: isEmpty(get(meta, ['error', editConfig.chipIndex, selectedInput], []))
@@ -315,7 +311,7 @@ const NewChipForm = React.forwardRef(
     }, [meta, showValidationRules, selectedInput, editConfig.chipIndex])
 
     const getValidationRules = useCallback(() => {
-      return validationRules[selectedInput].map(({ isValid = false, label, name }) => {
+      return validationRules[selectedInput]?.map(({ isValid = false, label, name }) => {
         return <ValidationTemplate valid={isValid} validationMessage={label} key={name} />
       })
     }, [selectedInput, validationRules])
@@ -336,17 +332,19 @@ const NewChipForm = React.forwardRef(
           ref={refInputKey}
           style={{ width: chipData.keyFieldWidth }}
         />
-        <div className="edit-chip-separator">:</div>
-        <NewChipInput
-          className={labelValueClassName}
-          disabled={!isEditable || editConfig.chipIndex !== chipIndex}
-          name={valueName}
-          onChange={handleOnChange}
-          onFocus={handleOnFocus}
-          placeholder="value"
-          ref={refInputValue}
-          style={{ width: chipData.valueFieldWidth }}
-        />
+        {!chipData.isKeyOnly && <div className="edit-chip-separator">:</div>}
+        {!chipData.isKeyOnly && (
+          <NewChipInput
+            className={labelValueClassName}
+            disabled={!isEditable || editConfig.chipIndex !== chipIndex}
+            name={valueName}
+            onChange={handleOnChange}
+            onFocus={handleOnFocus}
+            placeholder="value"
+            ref={refInputValue}
+            style={{ width: chipData.valueFieldWidth }}
+          />
+        )}
 
         {editConfig.chipIndex !== chipIndex && isEditable && (
           <button

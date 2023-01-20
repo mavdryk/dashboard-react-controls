@@ -21,8 +21,9 @@ import classNames from 'classnames'
 
 import './formCheckBox.scss'
 
-const FormCheckBox = ({ children, className, name, label, ...inputProps }) => {
+const FormCheckBox = ({ children, className, highlightLabel, label, name, ...inputProps }) => {
   const formFieldClassNames = classNames('form-field-checkbox', className)
+  const labelClassNames = classNames(highlightLabel && 'highlighted')
 
   return (
     <Field name={name} value={inputProps.value} type="checkbox">
@@ -35,7 +36,7 @@ const FormCheckBox = ({ children, className, name, label, ...inputProps }) => {
             }}
             id={inputProps.value ?? name}
           />
-          <label htmlFor={inputProps.value ?? name}>
+          <label htmlFor={inputProps.value ?? name} className={labelClassNames}>
             {label ? label : ''}
             {children}
           </label>
@@ -47,11 +48,13 @@ const FormCheckBox = ({ children, className, name, label, ...inputProps }) => {
 
 FormCheckBox.defaultProps = {
   className: '',
+  highlightLabel: false,
   label: ''
 }
 
 FormCheckBox.propTypes = {
   className: PropTypes.string,
+  highlightLabel: PropTypes.bool,
   name: PropTypes.string.isRequired,
   label: PropTypes.string
 }

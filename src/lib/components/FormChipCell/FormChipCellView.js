@@ -18,6 +18,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { FieldArray } from 'react-final-form-arrays'
+import { isEmpty } from 'lodash'
 
 import Tooltip from '../Tooltip/Tooltip'
 import FormChip from './FormChip/FormChip'
@@ -79,7 +80,10 @@ const FormChipCellView = React.forwardRef(
     return (
       <FieldArray name={name} validate={validateFields}>
         {({ fields, meta }) => {
-          if (validationRules.key.every((rule) => rule.name !== uniquenessError.name)) {
+          if (
+            !isEmpty(validationRules) &&
+            validationRules.key.every((rule) => rule.name !== uniquenessError.name)
+          ) {
             validationRules.key.push(uniquenessError)
           }
 
@@ -100,10 +104,14 @@ const FormChipCellView = React.forwardRef(
                                 text={
                                   <span className="chip__content">
                                     {chipData.key}
-                                    <span className="chip__delimiter">
-                                      {chipData.delimiter ? chipData.delimiter : ':'}
-                                    </span>
-                                    {chipData.value}
+                                    {!chipData.isKeyOnly && (
+                                      <>
+                                        <span className="chip__delimiter">
+                                          {chipData.delimiter ? chipData.delimiter : ':'}
+                                        </span>
+                                        {chipData.value}
+                                      </>
+                                    )}
                                   </span>
                                 }
                               />

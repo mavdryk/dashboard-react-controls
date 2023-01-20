@@ -57,7 +57,9 @@ const HiddenChipsBlock = React.forwardRef(
     }, [hiddenRef])
 
     const generateChipData = (chip) => {
-      return `${chip.key}${chip.delimiter ? chip.delimiter : ':'} ${chip.value}`
+      return chip.isKeyOnly
+        ? chip.key
+        : `${chip.key}${chip.delimiter ? chip.delimiter : ':'} ${chip.value}`
     }
 
     useEffect(() => {
@@ -112,8 +114,12 @@ const HiddenChipsBlock = React.forwardRef(
                     element.delimiter ? (
                       <span className="chip__content">
                         {element.key}
-                        <span className="chip__delimiter">{element.delimiter}</span>
-                        {element.value}
+                        {!element.isKeyOnly && (
+                          <>
+                            <span className="chip__delimiter">{element.delimiter}</span>
+                            {element.value}
+                          </>
+                        )}
                       </span>
                     ) : (
                       generateChipData(element)
