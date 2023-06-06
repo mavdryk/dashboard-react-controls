@@ -15,7 +15,7 @@ under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
 import { create } from 'react-modal-promise'
-import { differenceWith, isEqual, omit, isEmpty } from 'lodash'
+import { differenceWith, isEqual, get, omit, isEmpty } from 'lodash'
 import { ConfirmDialog } from '../components'
 import { SECONDARY_BUTTON, TERTIARY_BUTTON } from '../constants'
 
@@ -51,4 +51,14 @@ export const areArraysEqual = (firstArray, secondArray, omitBy = []) => {
       return isEqual(omit(a, omitBy), omit(b, omitBy))
     })
   )
+}
+
+export const getErrorDetail = (error) => {
+  const errorDetail = get(error, 'response.data.detail', '')
+
+  if (typeof errorDetail === 'string') {
+    return errorDetail
+  } else {
+    return get(errorDetail, 'reason', '')
+  }
 }

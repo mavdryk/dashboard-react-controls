@@ -125,6 +125,7 @@ textarea {
 .form-table {
   $tableHeaderHeight: 50px;
 
+  width: 100%;
   max-height: 500px;
   overflow: hidden;
   overflow-y: auto;
@@ -150,7 +151,8 @@ textarea {
 
       .form-table__cell {
         &:not(.form-table__actions-cell) {
-          padding: 10px 15px;
+          padding-top: 6px;
+          padding-bottom: 6px;
         }
       }
     }
@@ -213,12 +215,17 @@ textarea {
     display: flex;
     overflow: hidden;
     align-items: center;
-    padding: 3px 15px;
+    padding: 3px 10px;
     color: $primary;
 
     &.disabled {
       color: $spunPearl;
     }
+  }
+
+  .form-table__cell_min {
+    flex: 0.1;
+    min-width: 30px;
   }
 
   .form-table__cell_1 {

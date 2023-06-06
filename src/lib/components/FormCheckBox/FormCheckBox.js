@@ -14,34 +14,51 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-import React from 'react'
+import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import { Field } from 'react-final-form'
 import classNames from 'classnames'
 
 import './formCheckBox.scss'
 
-const FormCheckBox = ({ children, className, highlightLabel, label, name, ...inputProps }) => {
-  const formFieldClassNames = classNames('form-field-checkbox', className)
+const FormCheckBox = ({
+  children,
+  className,
+  highlightLabel,
+  label,
+  name,
+  readOnly,
+  ...inputProps
+}) => {
+  const formFieldClassNames = classNames(
+    'form-field-checkbox',
+    readOnly && 'form-field-checkbox_readonly',
+    className
+  )
   const labelClassNames = classNames(highlightLabel && 'highlighted')
+  const inputRef = useRef()
 
   return (
     <Field name={name} value={inputProps.value} type="checkbox">
-      {({ input }) => (
-        <div className={formFieldClassNames}>
-          <input
-            {...{
-              ...input,
-              ...inputProps
-            }}
-            id={inputProps.value ?? name}
-          />
-          <label htmlFor={inputProps.value ?? name} className={labelClassNames}>
-            {label ? label : ''}
-            {children}
-          </label>
-        </div>
-      )}
+      {({ input }) => {
+        return (
+          <div className={formFieldClassNames}>
+            <input
+              ref={inputRef}
+              className={classNames(input.checked ? 'checked' : 'unchecked')}
+              type="checkbox"
+              data-testid="checkbox"
+              id={inputProps.value ?? name}
+              {...{ ...input, ...inputProps }}
+              value={String(input.checked)}
+            />
+            <label htmlFor={inputProps.value ?? name} className={labelClassNames}>
+              {label ? label : ''}
+              {children}
+            </label>
+          </div>
+        )
+      }}
     </Field>
   )
 }
@@ -49,14 +66,16 @@ const FormCheckBox = ({ children, className, highlightLabel, label, name, ...inp
 FormCheckBox.defaultProps = {
   className: '',
   highlightLabel: false,
-  label: ''
+  label: '',
+  readOnly: false
 }
 
 FormCheckBox.propTypes = {
   className: PropTypes.string,
   highlightLabel: PropTypes.bool,
   name: PropTypes.string.isRequired,
-  label: PropTypes.string
+  label: PropTypes.string,
+  readOnly: PropTypes.bool
 }
 
 export default React.memo(FormCheckBox)
