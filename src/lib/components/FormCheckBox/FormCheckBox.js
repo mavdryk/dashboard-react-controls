@@ -30,11 +30,12 @@ const FormCheckBox = ({ children, className, highlightLabel, label, name, ...inp
       {({ input }) => (
         <div className={formFieldClassNames}>
           <input
-            {...{
-              ...input,
-              ...inputProps
-            }}
+            className={classNames(input.checked ? 'checked' : 'unchecked')}
+            type="checkbox"
+            data-testid="checkbox"
             id={inputProps.value ?? name}
+            {...{ ...input, ...inputProps }}
+            value={String(input.checked)}
           />
           <label htmlFor={inputProps.value ?? name} className={labelClassNames}>
             {label ? label : ''}
