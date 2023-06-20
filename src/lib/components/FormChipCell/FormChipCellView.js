@@ -20,14 +20,14 @@ import classnames from 'classnames'
 import { FieldArray } from 'react-final-form-arrays'
 import { isEmpty } from 'lodash'
 
-import Tooltip from '../Tooltip/Tooltip'
 import FormChip from './FormChip/FormChip'
+import HiddenChipsBlock from './HiddenChipsBlock/HiddenChipsBlock'
 import TextTooltipTemplate from '../TooltipTemplate/TextTooltipTemplate'
-import HiddenChipsBlock from '../../elements/HiddenChipsBlock/HiddenChipsBlock'
+import Tooltip from '../Tooltip/Tooltip'
 
 import { CHIP_OPTIONS } from '../../types'
-import { uniquenessError } from './formChipCell.util'
 import { isEveryObjectValueEmpty } from '../../utils/common.util'
+import { uniquenessError } from './formChipCell.util'
 
 import { ReactComponent as Add } from '../../images/add.svg'
 
@@ -52,7 +52,7 @@ const FormChipCellView = React.forwardRef(
       validateFields,
       validationRules
     },
-    { chipsCellRef, chipsWrapperRef }
+    { chipsCellRef, chipsWrapperRef, hiddenChipsCounterRef, hiddenChipsPopUpRef }
   ) => {
     const buttonAddClassNames = classnames(
       'button-add',
@@ -151,12 +151,13 @@ const FormChipCellView = React.forwardRef(
                         chipOptions={chipOptions}
                         chips={chips.hiddenChips}
                         handleShowElements={handleShowElements}
-                        ref={chipsCellRef}
+                        ref={{ hiddenChipsCounterRef, hiddenChipsPopUpRef }}
                         textOverflowEllipsis
                       />
                     )}
                     {chips.hiddenChipsNumber && (
                       <span
+                        ref={hiddenChipsCounterRef}
                         className={`${chipClassNames} chips_button`}
                         onClick={handleShowElements}
                       >

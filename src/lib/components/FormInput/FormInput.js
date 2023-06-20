@@ -22,14 +22,13 @@ import { Field, useField } from 'react-final-form'
 
 import InputNumberButtons from './InputNumberButtons/InputNumberButtons'
 import OptionsMenu from '../../elements/OptionsMenu/OptionsMenu'
-import { TextTooltipTemplate, Tip, Tooltip } from '../../components'
 import ValidationTemplate from '../../elements/ValidationTemplate/ValidationTemplate'
-
-import { useDebounce } from '../../hooks/useDebounce'
-import { checkPatternsValidity, checkPatternsValidityAsync } from '../../utils/validation.util'
-import { useDetectOutsideClick } from '../../hooks/useDetectOutsideClick'
+import { TextTooltipTemplate, Tip, Tooltip } from '../../components'
 
 import { INPUT_LINK, INPUT_VALIDATION_RULES } from '../../types'
+import { checkPatternsValidity, checkPatternsValidityAsync } from '../../utils/validation.util'
+import { useDebounce } from '../../hooks/useDebounce'
+import { useDetectOutsideClick } from '../../hooks'
 
 import { ReactComponent as InvalidIcon } from '../../images/invalid.svg'
 import { ReactComponent as Popout } from '../../images/popout.svg'

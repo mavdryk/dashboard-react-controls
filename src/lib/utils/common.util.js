@@ -52,3 +52,25 @@ export const areArraysEqual = (firstArray, secondArray, omitBy = []) => {
     })
   )
 }
+
+/**
+ * Retrieves the appropriate transition end event name based on the browser.
+ *
+ * @returns {string} The transition end event name.
+ */
+export const getTransitionEndEventName = () => {
+  const transitions = {
+    transition: 'transitionend',
+    OTransition: 'oTransitionEnd',
+    MozTransition: 'transitionend',
+    WebkitTransition: 'webkitTransitionEnd'
+  }
+
+  let bodyStyle = document.body.style
+
+  for (let transition in transitions) {
+    if (bodyStyle[transition] !== undefined) {
+      return transitions[transition]
+    }
+  }
+}

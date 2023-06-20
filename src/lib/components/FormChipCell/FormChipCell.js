@@ -14,20 +14,20 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import lodash, { get, isEmpty, set, isNil } from 'lodash'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 
 import FormChipCellView from './FormChipCellView'
 
-import { areArraysEqual, isEveryObjectValueEmpty } from '../../utils/common.util'
-import { generateChipsList } from '../../utils/generateChipsList.util'
-import { checkPatternsValidity } from '../../utils/validation.util'
-import { uniquenessError } from './formChipCell.util'
-
 import { CHIP_OPTIONS } from '../../types'
 import { CLICK, TAB, TAB_SHIFT } from '../../constants'
+import { areArraysEqual } from '../../utils/common.util'
+import { checkPatternsValidity } from '../../utils/validation.util'
+import { generateChipsList } from '../../utils/generateChipsList.util'
+import { uniquenessError } from './formChipCell.util'
+import { useChipCell } from '../../hooks/useChipCell.hook'
 
 import './formChipCell.scss'
 
@@ -47,9 +47,19 @@ const FormChipCell = ({
   visibleChipsMaxLength
 }) => {
   const chipsClassName = classnames('chips', className)
+  const {
+    chipsCellRef,
+    chipsWrapperRef,
+    handleShowElements,
+    hiddenChipsCounterRef,
+    hiddenChipsPopUpRef,
+    setChipsSizes,
+    setShowHiddenChips,
+    showChips,
+    showHiddenChips,
+    visibleChipsCount
+  } = useChipCell(isEditable, visibleChipsMaxLength)
 
-  const [chipsSizes, setChipsSizes] = useState({})
-  const [showHiddenChips, setShowHiddenChips] = useState(false)
   const [editConfig, setEditConfig] = useState({
     chipIndex: null,
     isEdit: false,
@@ -57,18 +67,6 @@ const FormChipCell = ({
     isValueFocused: false,
     isNewChip: false
   })
-
-  const [showChips, setShowChips] = useState(false)
-  const [visibleChipsCount, setVisibleChipsCount] = useState(8)
-
-  const chipsCellRef = useRef()
-  const chipsWrapperRef = useRef()
-
-  const handleShowElements = useCallback(() => {
-    if (!isEditable || (isEditable && visibleChipsMaxLength)) {
-      setShowHiddenChips((state) => !state)
-    }
-  }, [isEditable, visibleChipsMaxLength])
 
   let chips = useMemo(() => {
     return isEditable || visibleChipsMaxLength === 'all'
@@ -81,63 +79,6 @@ const FormChipCell = ({
           visibleChipsMaxLength ? visibleChipsMaxLength : visibleChipsCount
         )
   }, [visibleChipsMaxLength, isEditable, visibleChipsCount, formState.values, name])
-
-  const handleResize = useCallback(() => {
-    if (!isEditable && !isEveryObjectValueEmpty(chipsSizes)) {
-      const parentSize = chipsCellRef.current?.getBoundingClientRect().width
-      let maxLength = 0
-      let chipIndex = 0
-      const padding = 65
-
-      Object.values(chipsSizes).every((chipSize, index) => {
-        if (
-          maxLength + chipSize > parentSize ||
-          (Object.values(chipsSizes).length > 1 && maxLength + chipSize + padding > parentSize)
-        ) {
-          chipIndex = index
-
-          return false
-        } else {
-          maxLength += chipSize
-
-          if (index === Object.values(chipsSizes).length - 1) {
-            chipIndex = 8
-          }
-
-          return true
-        }
-      })
-
-      setVisibleChipsCount(chipIndex)
-      setShowChips(true)
-    }
-  }, [chipsSizes, isEditable])
-
-  useEffect(() => {
-    handleResize()
-  }, [handleResize, showChips])
-
-  useEffect(() => {
-    if (!isEditable) {
-      window.addEventListener('resize', handleResize)
-
-      return () => window.removeEventListener('resize', handleResize)
-    }
-  }, [handleResize, isEditable])
-
-  useEffect(() => {
-    window.addEventListener('mainResize', handleResize)
-
-    return () => window.removeEventListener('mainResize', handleResize)
-  }, [handleResize])
-
-  useEffect(() => {
-    if (showHiddenChips) {
-      window.addEventListener('click', handleShowElements)
-
-      return () => window.removeEventListener('click', handleShowElements)
-    }
-  }, [showHiddenChips, handleShowElements])
 
   const checkChipsList = useCallback(
     (currentChipsList) => {
@@ -176,7 +117,15 @@ const FormChipCell = ({
 
       event && event.preventDefault()
     },
-    [editConfig.isEdit, editConfig.chipIndex, showHiddenChips, formState, name, delimiter]
+    [
+      editConfig.isEdit,
+      editConfig.chipIndex,
+      showHiddenChips,
+      formState.form.mutators,
+      name,
+      delimiter,
+      setShowHiddenChips
+    ]
   )
 
   const handleRemoveChip = useCallback(
@@ -351,7 +300,7 @@ const FormChipCell = ({
           handleToEditMode={handleToEditMode}
           isEditable={isEditable}
           name={name}
-          ref={{ chipsCellRef, chipsWrapperRef }}
+          ref={{ chipsCellRef, chipsWrapperRef, hiddenChipsCounterRef, hiddenChipsPopUpRef }}
           setChipsSizes={setChipsSizes}
           setEditConfig={setEditConfig}
           shortChips={shortChips}

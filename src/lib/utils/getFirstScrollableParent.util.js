@@ -16,19 +16,33 @@ such restriction.
 */
 const regex = /(auto|scroll|hidden)/
 
-const style = (node, prop) =>
-  getComputedStyle(node, null).getPropertyValue(prop)
+/**
+ * Retrieves the computed style of a node for the specified CSS property.
+ *
+ * @param {Node} node - The DOM node.
+ * @param {string} prop - The CSS property to retrieve.
+ * @returns {string} The computed style value.
+ */
+const style = (node, prop) => getComputedStyle(node, null).getPropertyValue(prop)
 
-const scroll = node =>
-  regex.test(
-    style(node, 'overflow') +
-      style(node, 'overflow-y') +
-      style(node, 'overflow-x')
-  )
+/**
+ * Checks if the given node has a scrollable overflow.
+ *
+ * @param {Node} node - The DOM node.
+ * @returns {boolean} Returns true if the node has a scrollable overflow, false otherwise.
+ */
+const scroll = (node) =>
+  regex.test(style(node, 'overflow') + style(node, 'overflow-y') + style(node, 'overflow-x'))
 
-export const getFirstScrollableParentUtil = node =>
+/**
+ * Finds the first scrollable parent node of the given node.
+ *
+ * @param {Node} node - The DOM node.
+ * @returns {Node} The first scrollable parent node.
+ */
+export const getFirstScrollableParent = (node) =>
   !node || node === document.body
     ? document.body
     : scroll(node)
     ? node
-    : getFirstScrollableParentUtil(node.parentNode)
+    : getFirstScrollableParent(node.parentNode)
