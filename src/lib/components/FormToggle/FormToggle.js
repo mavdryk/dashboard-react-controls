@@ -14,68 +14,60 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-import React, { useRef } from 'react'
+import React from 'react'
+import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import { Field } from 'react-final-form'
-import classNames from 'classnames'
 
-import './formCheckBox.scss'
+import './formToggle.scss'
 
-const FormCheckBox = ({
-  children,
-  className,
-  highlightLabel,
-  label,
-  name,
-  readOnly,
-  ...inputProps
-}) => {
-  const formFieldClassNames = classNames(
-    'form-field-checkbox',
-    readOnly && 'form-field-checkbox_readonly',
-    className
-  )
-  const labelClassNames = classNames(highlightLabel && 'highlighted')
-  const inputRef = useRef()
-
+const FormToggle = ({ className, label, name, onChange, readOnly, ...inputProps }) => {
   return (
     <Field name={name} value={inputProps.value} type="checkbox">
       {({ input }) => {
+        const toggleClassName = classnames(
+          'form-field-toggle',
+          className,
+          readOnly && 'form-field-toggle_readonly',
+          input.checked && 'form-field-toggle_checked'
+        )
+
         return (
-          <div className={formFieldClassNames}>
+          <label className={toggleClassName}>
             <input
-              ref={inputRef}
-              className={classNames(input.checked ? 'checked' : 'unchecked')}
-              type="checkbox"
-              data-testid="checkbox"
-              id={inputProps.value ?? name}
+              data-testid="toggle"
+              id={name}
               {...{ ...input, ...inputProps }}
-              value={String(input.checked)}
+              onChange={(event) => {
+                onChange && onChange(event)
+                input.onChange(event)
+              }}
+              type="checkbox"
             />
-            <label htmlFor={inputProps.value ?? name} className={labelClassNames}>
-              {label ? label : ''}
-              {children}
-            </label>
-          </div>
+            <div className="form-field-toggle__switch">
+              <span className="form-field-toggle__switch-button" />
+            </div>
+            {label && <div className="form-field-toggle__label">{label}</div>}
+          </label>
         )
       }}
     </Field>
   )
 }
 
-FormCheckBox.defaultProps = {
+FormToggle.defaultProps = {
   className: '',
-  highlightLabel: false,
   label: '',
+  onChange: () => {},
   readOnly: false
 }
 
-FormCheckBox.propTypes = {
+FormToggle.propTypes = {
   className: PropTypes.string,
-  highlightLabel: PropTypes.bool,
-  name: PropTypes.string.isRequired,
   label: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
   readOnly: PropTypes.bool
 }
 
-export default React.memo(FormCheckBox)
+export default FormToggle

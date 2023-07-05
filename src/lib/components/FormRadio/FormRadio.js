@@ -21,8 +21,12 @@ import classNames from 'classnames'
 
 import './FormRadio.scss'
 
-const FormRadio = ({ className, name, label, ...inputProps }) => {
-  const formFieldClassNames = classNames('form-field-radio', className)
+const FormRadio = ({ className, name, label, readOnly, ...inputProps }) => {
+  const formFieldClassNames = classNames(
+    'form-field-radio',
+    readOnly && 'form-field-radio_readonly',
+    className
+  )
 
   return (
     <Field name={name} value={inputProps.value} type="radio">
@@ -33,9 +37,9 @@ const FormRadio = ({ className, name, label, ...inputProps }) => {
               ...input,
               ...inputProps
             }}
-            id={inputProps.value}
+            id={name + inputProps.value}
           />
-          <label htmlFor={inputProps.value}>{label}</label>
+          <label htmlFor={name + inputProps.value}>{label}</label>
         </div>
       )}
     </Field>
@@ -44,13 +48,14 @@ const FormRadio = ({ className, name, label, ...inputProps }) => {
 
 FormRadio.defaultProps = {
   className: '',
-  label: ''
+  readOnly: false
 }
 
 FormRadio.propTypes = {
   className: PropTypes.string,
+  label: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired
+  readOnly: PropTypes.bool
 }
 
 export default React.memo(FormRadio)

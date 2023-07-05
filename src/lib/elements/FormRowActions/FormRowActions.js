@@ -31,7 +31,9 @@ import { ReactComponent as Checkmark } from '../../images/checkmark2.svg'
 
 const FormRowActions = ({
   applyChanges,
+  deleteIsDisabled,
   deleteRow,
+  disabled,
   discardOrDelete,
   editingItem,
   fieldsPath,
@@ -41,12 +43,17 @@ const FormRowActions = ({
     <>
       {editingItem?.ui?.index === index ? (
         <div className="form-table__cell form-table__actions-cell">
-          <RoundedIcon onClick={(event) => applyChanges(event, index)} tooltipText="Apply">
+          <RoundedIcon
+            onClick={(event) => applyChanges(event, index)}
+            tooltipText="Apply"
+            disabled={disabled}
+          >
             <Checkmark />
           </RoundedIcon>
           <RoundedIcon
             onClick={(event) => discardOrDelete(event, fieldsPath, index)}
             tooltipText={editingItem.ui?.isNew ? 'Delete' : 'Discard changes'}
+            disabled={disabled}
           >
             {editingItem.ui?.isNew ? <Delete /> : <Close />}
           </RoundedIcon>
@@ -58,6 +65,7 @@ const FormRowActions = ({
               event.preventDefault()
             }}
             tooltipText="Edit"
+            disabled={disabled}
           >
             <Edit />
           </RoundedIcon>
@@ -67,6 +75,7 @@ const FormRowActions = ({
               deleteRow(event, fieldsPath, index)
             }}
             tooltipText="Delete"
+            disabled={disabled || deleteIsDisabled}
           >
             <Delete />
           </RoundedIcon>
@@ -77,12 +86,16 @@ const FormRowActions = ({
 }
 
 FormRowActions.defaultProps = {
+  deleteIsDisabled: false,
+  disabled: false,
   editingItem: null
 }
 
 FormRowActions.propTypes = {
   applyChanges: PropTypes.func.isRequired,
+  deleteIsDisabled: PropTypes.bool,
   deleteRow: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
   discardOrDelete: PropTypes.func.isRequired,
   editingItem: FORM_TABLE_EDITING_ITEM,
   fieldsPath: PropTypes.string.isRequired,
