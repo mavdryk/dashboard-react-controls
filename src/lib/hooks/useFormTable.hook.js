@@ -121,7 +121,14 @@ export const useFormTable = (formState) => {
 
     exitEditMode()
 
-    formState.form.mutators.remove(fieldsPath, index)
+    const values = get(formState.values, fieldsPath)
+
+    if (values?.length > 1) {
+      formState.form.mutators.remove(fieldsPath, index)
+    } else {
+      formState.form.change(fieldsPath, [])
+    }
+
     event && event.stopPropagation()
   }
 
