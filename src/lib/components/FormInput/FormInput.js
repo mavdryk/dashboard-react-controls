@@ -27,8 +27,7 @@ import { TextTooltipTemplate, Tip, Tooltip } from '../../components'
 
 import { INPUT_LINK, INPUT_VALIDATION_RULES } from '../../types'
 import { checkPatternsValidity, checkPatternsValidityAsync } from '../../utils/validation.util'
-import { useDebounce } from '../../hooks/useDebounce'
-import { useDetectOutsideClick } from '../../hooks'
+import { useDetectOutsideClick, useDebounce } from '../../hooks'
 
 import { ReactComponent as InvalidIcon } from '../../images/invalid.svg'
 import { ReactComponent as Popout } from '../../images/popout.svg'
@@ -99,8 +98,8 @@ const FormInput = React.forwardRef(
     useEffect(() => {
       setIsInvalid(
         errorsRef.current &&
-          meta.invalid &&
-          (meta.validating || meta.modified || (meta.submitFailed && meta.touched))
+        meta.invalid &&
+        (meta.validating || meta.modified || (meta.submitFailed && meta.touched))
       )
     }, [meta.invalid, meta.modified, meta.submitFailed, meta.touched, meta.validating])
 
@@ -191,7 +190,9 @@ const FormInput = React.forwardRef(
 
       let validationError = null
 
-      if (!isEmpty(rules) && !async) {
+      if (required && valueToValidate.trim().length === 0) {
+        validationError = { name: 'required', label: 'This field is required' }
+      } else if (!isEmpty(rules) && !async) {
         const [newRules, isValidField] = checkPatternsValidity(rules, valueToValidate)
         const invalidRules = newRules.filter((rule) => !rule.isValid)
 
@@ -220,8 +221,6 @@ const FormInput = React.forwardRef(
           validationError = { name: 'pattern', label: invalidText }
         } else if (valueToValidate.startsWith(' ')) {
           validationError = { name: 'empty', label: invalidText }
-        } else if (required && valueToValidate.trim().length === 0) {
-          validationError = { name: 'required', label: 'This field is required' }
         }
       }
 
@@ -257,8 +256,7 @@ const FormInput = React.forwardRef(
     }, 400)
 
     const parseField = (val) => {
-      if (!val) return
-      return inputProps.type === 'number' ? +val : val
+      return inputProps.type === 'number' && val ? parseFloat(val) || val : val
     }
 
     return (

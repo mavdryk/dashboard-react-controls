@@ -23,7 +23,7 @@ import Tooltip from '../../Tooltip/Tooltip'
 import TextTooltipTemplate from '../../TooltipTemplate/TextTooltipTemplate'
 
 import { CHIP_OPTIONS } from '../../../types'
-import { useHiddenChipsBlock } from '../../../hooks/useHiddenChipsBlock.hook'
+import { useHiddenChipsBlock } from '../../../hooks'
 
 const HiddenChipsBlock = React.forwardRef(
   (

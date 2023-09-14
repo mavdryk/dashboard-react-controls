@@ -18,6 +18,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { isNil } from 'lodash'
 
+import { performFloatOperation } from '../../../utils/math.util'
+
 import { ReactComponent as Arrow } from '../../../images/range-arrow-small.svg'
 
 import './InputNumberButtons.scss'
@@ -25,31 +27,25 @@ import './InputNumberButtons.scss'
 const InputNumberButtons = ({ disabled, min, max, onChange, step, value }) => {
   const handleIncrease = (event) => {
     event.preventDefault()
-    if (max && +value >= +max) return
+    if (max && value >= max) return
 
-    const currentValue = isCurrentValueEmpty() ? +step : +value + +step
-    const nextValue = isInteger(currentValue) ? currentValue : currentValue.toFixed(3)
+    const newValue = isCurrentValueEmpty() ? step : performFloatOperation(value, step, '+')
 
-    onChange(nextValue)
+    onChange(newValue)
   }
 
   const handleDecrease = (event) => {
     event.preventDefault()
 
-    if (value <= 0 || +value <= +min) return
+    if (min && value <= min) return
 
-    const currentValue = isCurrentValueEmpty() ? -step : +value - +step
-    const nextValue = isInteger(currentValue) ? currentValue : currentValue.toFixed(3)
+    const newValue = isCurrentValueEmpty() ? -step : performFloatOperation(value, step, '-')
 
-    onChange(nextValue)
+    onChange(newValue)
   }
 
   const isCurrentValueEmpty = () => {
     return isNil(value) || value === ''
-  }
-
-  const isInteger = (number) => {
-    return Number(number) === number && number % 1 === 0
   }
 
   return (
