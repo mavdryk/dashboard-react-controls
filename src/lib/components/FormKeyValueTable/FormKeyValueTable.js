@@ -22,7 +22,7 @@ import { FieldArray } from 'react-final-form-arrays'
 import { FormSelect, FormInput, Tooltip, TextTooltipTemplate } from '../../components'
 import { FormActionButton, FormRowActions } from '../../elements'
 
-import { useFormTable } from '../../hooks/useFormTable.hook'
+import { useFormTable } from '../../hooks'
 
 const FormKeyValueTable = ({
   addNewItemLabel,
@@ -70,8 +70,8 @@ const FormKeyValueTable = ({
               const tableRowClassNames = classnames(
                 'form-table__row',
                 fieldsPath === editingItem?.ui?.fieldsPath &&
-                  editingItem?.ui?.index === index &&
-                  'active'
+                editingItem?.ui?.index === index &&
+                'active'
               )
               return editingItem && index === editingItem.ui.index && !disabled ? (
                 <div className={tableRowClassNames} key={index}>

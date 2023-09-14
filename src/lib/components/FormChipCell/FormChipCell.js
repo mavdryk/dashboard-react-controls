@@ -27,7 +27,7 @@ import { areArraysEqual } from '../../utils/common.util'
 import { checkPatternsValidity } from '../../utils/validation.util'
 import { generateChipsList } from '../../utils/generateChipsList.util'
 import { uniquenessError } from './formChipCell.util'
-import { useChipCell } from '../../hooks/useChipCell.hook'
+import { useChipCell } from '../../hooks'
 
 import './formChipCell.scss'
 
@@ -71,13 +71,13 @@ const FormChipCell = ({
   let chips = useMemo(() => {
     return isEditable || visibleChipsMaxLength === 'all'
       ? {
-          visibleChips: get(formState.values, name),
-          hiddenChips: []
-        }
+        visibleChips: get(formState.values, name),
+        hiddenChips: []
+      }
       : generateChipsList(
-          get(formState.values, name),
-          visibleChipsMaxLength ? visibleChipsMaxLength : visibleChipsCount
-        )
+        get(formState.values, name),
+        visibleChipsMaxLength ? visibleChipsMaxLength : visibleChipsCount
+      )
   }, [visibleChipsMaxLength, isEditable, visibleChipsCount, formState.values, name])
 
   const checkChipsList = useCallback(
