@@ -14,8 +14,28 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-export { useChipCell } from './useChipCell.hook'
-export { useDebounce } from './useDebounce.hook'
-export { useDetectOutsideClick } from './useDetectOutsideClick.hook'
-export { useFormTable } from './useFormTable.hook'
-export { useHiddenChipsBlock } from './useHiddenChipsBlock.hook'
+import { useEffect } from 'react'
+
+/**
+ * Hook for handling closing when clicking outside an element
+ * @function useDetectOutsideClick
+ * @param {React.node} ref
+ * @param {function} handler A callback function to use on outside click
+ */
+export const useDetectOutsideClick = (ref, handler) => {
+  useEffect(() => {
+    const onClick = e => {
+      e.stopPropagation()
+      // If the active element exists and is clicked outside of
+      if (ref.current !== null && !ref.current.contains(e.target)) {
+        handler(e)
+      }
+    }
+    // If the item is active (ie open) then listen for clicks outside
+    window.addEventListener('click', onClick)
+
+    return () => {
+      window.removeEventListener('click', onClick)
+    }
+  }, [ref, handler])
+}

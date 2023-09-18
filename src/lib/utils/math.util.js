@@ -14,28 +14,29 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-import { useEffect } from 'react'
 
 /**
- * Hook for handling closing when clicking outside of an element
- * @function useDetectOutsideClick
- * @param {React.node} ref
- * @param {function} handler A callback function to use on outside click
+ * Performs a floating-point arithmetic operation on two numbers.
+ *
+ * @param {number} num1 - The first operand.
+ * @param {number} num2 - The second operand.
+ * @param {string} operator - The operator to use for the operation. Supported operators are '+', and '-'.
+ * @returns {number} The result of the arithmetic operation.
  */
-export const useDetectOutsideClick = (ref, handler) => {
-  useEffect(() => {
-    const onClick = e => {
-      e.stopPropagation()
-      // If the active element exists and is clicked outside of
-      if (ref.current !== null && !ref.current.contains(e.target)) {
-        handler(e)
-      }
-    }
-    // If the item is active (ie open) then listen for clicks outside
-    window.addEventListener('click', onClick)
+export const performFloatOperation = (num1, num2, operator) => {
+  const precision = Math.max(
+    (num1.toString().split('.')[1] || '').length,
+    (num2.toString().split('.')[1] || '').length
+  )
 
-    return () => {
-      window.removeEventListener('click', onClick)
-    }
-  }, [ref, handler])
+  const multiplier = Math.pow(10, precision)
+
+  switch (operator) {
+    case '+':
+      return (Math.round(num1 * multiplier) + Math.round(num2 * multiplier)) / multiplier
+    case '-':
+      return (Math.round(num1 * multiplier) - Math.round(num2 * multiplier)) / multiplier
+    default:
+      return 0
+  }
 }
