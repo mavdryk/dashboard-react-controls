@@ -41,6 +41,7 @@ const Wizard = ({
   stepsConfig,
   submitButtonLabel
 }) => {
+  const wizardClasses = classNames('wizard-form', className)
   const [activeStepNumber, setActiveStepNumber] = useState(0)
 
   const activeStepTemplate = useMemo(() => {
@@ -59,11 +60,14 @@ const Wizard = ({
     return (
       stepsConfig
         ?.filter((step) => !step.isHidden)
-        .map((step) => ({ id: step.id, label: step.label })) || []
+        .map((step) => ({ id: step.id, label: step.label, disabled: step.disabled })) || []
     )
   }, [stepsConfig])
 
-  const wizardClasses = classNames('wizard-form', className)
+  const nextStepIsInvalid = useMemo(() => {
+    return formState.submitting || (formState.invalid && formState.submitFailed)
+  }, [formState.invalid, formState.submitFailed, formState.submitting])
+
 
   const goToNextStep = () => {
     setActiveStepNumber((prevStep) => Math.min(++prevStep, totalSteps))
@@ -96,7 +100,7 @@ const Wizard = ({
     />,
     <Button
       onClick={handleSubmit}
-      disabled={formState.submitting || (formState.invalid && formState.submitFailed)}
+      disabled={nextStepIsInvalid}
       label={isLastStep ? submitButtonLabel : 'Next'}
       type="button"
       variant={SECONDARY_BUTTON}
@@ -132,7 +136,11 @@ const Wizard = ({
       subTitle={subTitle}
       title={title}
     >
-      <WizardSteps activeStepNumber={activeStepNumber} jumpToStep={jumpToStep} steps={stepsMenu} />
+      <WizardSteps activeStepNumber={activeStepNumber}
+                   handleSubmit={handleSubmit}
+                   jumpToStep={jumpToStep}
+                   nextStepIsInvalid={nextStepIsInvalid}
+                   steps={stepsMenu} />
       <div className="wizard-form__content-container">
         <div className="wizard-form__content">{activeStepTemplate}</div>
       </div>
