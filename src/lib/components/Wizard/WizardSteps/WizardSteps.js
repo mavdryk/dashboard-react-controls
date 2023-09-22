@@ -24,38 +24,50 @@ import { WIZARD_STEPS_CONFIG } from '../../../types'
 
 import './WizardSteps.scss'
 
-const WizardSteps = ({ activeStepNumber, jumpToStep, steps }) => {
-  const getStepClassNames = (idx) =>
+const WizardSteps = ({ activeStepNumber, handleSubmit, jumpToStep, nextStepIsInvalid, steps }) => {
+  const getStepClassNames = (idx, stepIsInvalid) =>
     classNames(
       'wizard-steps__item',
       idx === activeStepNumber && 'active',
-      idx < activeStepNumber && 'valid'
+      !stepIsInvalid && 'valid'
     )
 
   const handleJumpToStep = (event, idx) => {
     event.preventDefault()
-    jumpToStep(idx)
+
+    if (idx === activeStepNumber + 1) {
+      handleSubmit()
+    } else {
+      jumpToStep(idx)
+    }
   }
 
   return (
     <div className="wizard-steps">
-      {steps.map(({ id, label }, idx) => (
-        <Button
-          className={getStepClassNames(idx)}
-          disabled={idx > activeStepNumber}
-          icon={<span className="wizard-steps__indicator">{idx + 1}</span>}
-          key={id}
-          label={label}
-          onClick={(e) => handleJumpToStep(e, idx)}
-        />
-      ))}
+      {steps.map(({ id, label, disabled }, idx) => {
+        const stepIsInvalid = idx > activeStepNumber + 1 ||
+          idx === activeStepNumber + 1 && (nextStepIsInvalid || disabled)
+
+        return (
+          <Button
+            className={getStepClassNames(idx, stepIsInvalid)}
+            disabled={stepIsInvalid}
+            icon={<span className="wizard-steps__indicator">{idx + 1}</span>}
+            key={id}
+            label={label}
+            onClick={(e) => handleJumpToStep(e, idx)}
+          />
+        )
+      })}
     </div>
   )
 }
 
 WizardSteps.propTypes = {
   activeStepNumber: PropTypes.number.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
   jumpToStep: PropTypes.func.isRequired,
+  nextStepIsInvalid: PropTypes.bool.isRequired,
   steps: WIZARD_STEPS_CONFIG
 }
 
