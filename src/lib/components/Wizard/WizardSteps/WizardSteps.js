@@ -17,6 +17,7 @@ such restriction.
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { isNumber } from 'lodash'
 
 import Button from '../../Button/Button'
 
@@ -24,34 +25,28 @@ import { WIZARD_STEPS_CONFIG } from '../../../types'
 
 import './WizardSteps.scss'
 
-const WizardSteps = ({ activeStepNumber, handleSubmit, jumpToStep, nextStepIsInvalid, steps }) => {
-  const getStepClassNames = (idx, stepIsInvalid) =>
+const WizardSteps = ({ activeStepNumber, firstDisabledStepIdx, jumpToStep, steps }) => {
+  const getStepClassNames = (idx, invalid) =>
     classNames(
       'wizard-steps__item',
-      idx === activeStepNumber && 'active',
-      !stepIsInvalid && 'valid'
+      idx === activeStepNumber && 'wizard-steps__item_active',
+      invalid && 'wizard-steps__item_invalid'
     )
 
   const handleJumpToStep = (event, idx) => {
     event.preventDefault()
-
-    if (idx === activeStepNumber + 1) {
-      handleSubmit()
-    } else {
-      jumpToStep(idx)
-    }
+    jumpToStep(idx)
   }
 
   return (
     <div className="wizard-steps">
-      {steps.map(({ id, label, disabled }, idx) => {
-        const stepIsInvalid = idx > activeStepNumber + 1 ||
-          idx === activeStepNumber + 1 && (nextStepIsInvalid || disabled)
+      {steps.map(({ id, label, disabled, invalid }, idx) => {
+        const stepIsDisabled = isNumber(firstDisabledStepIdx) && idx >= firstDisabledStepIdx
 
         return (
           <Button
-            className={getStepClassNames(idx, stepIsInvalid)}
-            disabled={stepIsInvalid}
+            className={getStepClassNames(idx, invalid)}
+            disabled={stepIsDisabled}
             icon={<span className="wizard-steps__indicator">{idx + 1}</span>}
             key={id}
             label={label}
@@ -63,11 +58,14 @@ const WizardSteps = ({ activeStepNumber, handleSubmit, jumpToStep, nextStepIsInv
   )
 }
 
+WizardSteps.defaultProps = {
+  firstDisabledStepIdx: null
+}
+
 WizardSteps.propTypes = {
   activeStepNumber: PropTypes.number.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
+  firstDisabledStepIdx: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf([null])]),
   jumpToStep: PropTypes.func.isRequired,
-  nextStepIsInvalid: PropTypes.bool.isRequired,
   steps: WIZARD_STEPS_CONFIG
 }
 

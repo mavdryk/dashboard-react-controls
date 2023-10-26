@@ -94,9 +94,11 @@ export const CONFIRM_DIALOG_SUBMIT_BUTTON = PropTypes.shape({
 
 export const WIZARD_STEPS_CONFIG = PropTypes.arrayOf(
   PropTypes.shape({
-    id: PropTypes.string,
-    label: PropTypes.string,
-    getActions: PropTypes.func
+    id: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    hidden: PropTypes.bool,
+    disabled: PropTypes.bool,
+    nextIsDisabled: PropTypes.bool
   })
 )
 

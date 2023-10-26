@@ -29,6 +29,7 @@ const FormKeyValueTable = ({
   className,
   defaultKey,
   disabled,
+  exitEditModeTriggerItem,
   fieldsPath,
   formState,
   isKeyRequired,
@@ -49,7 +50,7 @@ const FormKeyValueTable = ({
     editingItem,
     enterEditMode,
     isCurrentRowEditing
-  } = useFormTable(formState)
+  } = useFormTable(formState, exitEditModeTriggerItem)
 
   const uniquenessValidator = (fields, newValue) => {
     return !fields.value.some(({ data: { key } }, index) => {
@@ -172,8 +173,9 @@ const FormKeyValueTable = ({
 FormKeyValueTable.defaultProps = {
   addNewItemLabel: 'Add new item',
   className: '',
-  disabled: false,
   defaultKey: '',
+  disabled: false,
+  exitEditModeTriggerItem: null,
   isKeyRequired: true,
   isValueRequired: true,
   keyHeader: 'Key',
@@ -186,8 +188,9 @@ FormKeyValueTable.defaultProps = {
 FormKeyValueTable.propTypes = {
   addNewItemLabel: PropTypes.string,
   className: PropTypes.string,
-  disabled: PropTypes.bool,
   defaultKey: PropTypes.string,
+  disabled: PropTypes.bool,
+  exitEditModeTriggerItem: PropTypes.any,
   fieldsPath: PropTypes.string.isRequired,
   formState: PropTypes.shape({}).isRequired,
   isKeyRequired: PropTypes.bool,

@@ -223,14 +223,15 @@ const FormChipCell = ({
   )
 
   const validateFields = (fieldsArray) => {
+    if (!fieldsArray) return null
+
+    let errorData = []
+
     const uniquenessValidator = (newValue, idx) => {
       return !fieldsArray.some(({ key }, index) => {
         return newValue === key && index !== idx
       })
     }
-    let errorData = []
-
-    if (!fieldsArray) return []
 
     if (!isEmpty(validationRules)) {
       errorData = fieldsArray.map((chip) => {
@@ -259,12 +260,12 @@ const FormChipCell = ({
       }
     })
 
-    if (!errorData && validator) {
+    if (isEmpty(errorData) && validator) {
       errorData = validator(fieldsArray)
     }
 
     if (errorData.every((label) => isNil(label))) {
-      return []
+      return null
     }
 
     return errorData
@@ -332,7 +333,7 @@ FormChipCell.defaultProps = {
   onClick: () => {},
   shortChips: false,
   validationRules: {},
-  validator: () => {},
+  validator: null,
   visibleChipsMaxLength: null
 }
 

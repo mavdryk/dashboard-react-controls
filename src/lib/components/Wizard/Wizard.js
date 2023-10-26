@@ -14,9 +14,10 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { isEmpty, isNumber } from 'lodash'
 
 import Button from '../Button/Button'
 import Modal from '../Modal/Modal'
@@ -30,44 +31,73 @@ import './Wizard.scss'
 const Wizard = ({
   children,
   className,
-  formState,
+  getActions,
   isWizardOpen,
   location,
   onWizardResolve,
-  onWizardSubmit,
   previewText,
   size,
-  subTitle,
-  title,
   stepsConfig,
-  submitButtonLabel
+  subTitle,
+  title
 }) => {
   const wizardClasses = classNames('wizard-form', className)
+  const [jumpingToFirstInvalid, setJumpingToFirstInvalid] = useState(false)
   const [activeStepNumber, setActiveStepNumber] = useState(0)
+  const [firstDisabledStepIdx, setFirstDisabledStepIdx] = useState(null)
 
-  const activeStepTemplate = useMemo(() => {
-    return React.Children.toArray(children)[activeStepNumber]
-  }, [children, activeStepNumber])
+  const visibleSteps = useMemo(() => {
+    return stepsConfig?.filter((step) => !step.hidden) || []
+  }, [stepsConfig])
+
+  useLayoutEffect(() => {
+    const disabledStep = visibleSteps.find((step, stepIdx) => {
+      if (step.disabled) {
+        setFirstDisabledStepIdx(stepIdx)
+      }
+
+      return step.disabled
+    })
+
+    if (!disabledStep) {
+      setFirstDisabledStepIdx(null)
+    }
+  }, [visibleSteps])
+
+  useEffect(() => {
+    const firstInvalidStepIdx = visibleSteps.findIndex((step) => step.invalid)
+
+    if (jumpingToFirstInvalid && isNumber(firstInvalidStepIdx) && firstInvalidStepIdx !== -1) {
+      setActiveStepNumber(firstInvalidStepIdx)
+      setJumpingToFirstInvalid(false)
+    }
+  }, [jumpingToFirstInvalid, visibleSteps])
+
+  const stepsTemplate = useMemo(() => {
+    return React.Children.toArray(children)
+      .filter((child, idx) => !isEmpty(stepsConfig) && !stepsConfig[idx].hidden)
+      .map((child, idx) => {
+        const stepIsActive = idx === activeStepNumber
+        const newChild =
+          !isNumber(firstDisabledStepIdx) || idx < firstDisabledStepIdx
+            ? React.cloneElement(child, { stepIsActive })
+            : null
+
+        return (
+          <div key={idx} className={!stepIsActive ? 'wizard-form__hidden-content-item' : ''}>
+            {newChild}
+          </div>
+        )
+      })
+  }, [activeStepNumber, children, firstDisabledStepIdx, stepsConfig])
 
   const totalSteps = useMemo(() => {
-    return stepsConfig.filter((stepConfig) => !stepConfig.isHidden).length - 1 || 0
-  }, [stepsConfig])
+    return visibleSteps.length - 1 || 0
+  }, [visibleSteps])
 
   const isLastStep = useMemo(() => {
     return activeStepNumber === totalSteps
   }, [activeStepNumber, totalSteps])
-
-  const stepsMenu = useMemo(() => {
-    return (
-      stepsConfig
-        ?.filter((step) => !step.isHidden)
-        .map((step) => ({ id: step.id, label: step.label, disabled: step.disabled })) || []
-    )
-  }, [stepsConfig])
-
-  const nextStepIsInvalid = useMemo(() => {
-    return formState.submitting || (formState.invalid && formState.submitFailed)
-  }, [formState.invalid, formState.submitFailed, formState.submitting])
 
   const goToNextStep = () => {
     setActiveStepNumber((prevStep) => Math.min(++prevStep, totalSteps))
@@ -75,54 +105,54 @@ const Wizard = ({
 
   const goToPreviousStep = () => setActiveStepNumber((prevStep) => Math.max(--prevStep, 0))
 
+  const goToFirstInvalidStep = () => {
+    setJumpingToFirstInvalid(true)
+  }
+
   const jumpToStep = (idx) => {
     return setActiveStepNumber(idx)
   }
 
-  const handleSubmit = () => {
-    formState.handleSubmit()
+  const getDefaultActions = (stepConfig) => {
+    const defaultActions = []
 
-    if (formState.valid) {
-      if (isLastStep) {
-        onWizardSubmit(formState.values)
-      } else {
-        goToNextStep()
-      }
+    if (activeStepNumber !== 0) {
+      defaultActions.push(
+        <Button
+          onClick={goToPreviousStep}
+          disabled={activeStepNumber === 0}
+          label="Back"
+          type="button"
+        />
+      )
     }
+
+    defaultActions.push(
+      <Button
+        disabled={stepConfig.nextIsDisabled || isLastStep}
+        onClick={goToNextStep}
+        label={'Next'}
+        type="button"
+        variant={SECONDARY_BUTTON}
+      />
+    )
+
+    return defaultActions
   }
 
-  const getDefaultActions = () => [
-    <Button
-      onClick={goToPreviousStep}
-      disabled={activeStepNumber === 0}
-      label="Back"
-      type="button"
-    />,
-    <Button
-      onClick={handleSubmit}
-      disabled={nextStepIsInvalid}
-      label={isLastStep ? submitButtonLabel : 'Next'}
-      type="button"
-      variant={SECONDARY_BUTTON}
-    />
-  ]
-
   const renderModalActions = () => {
-    const filteredStepsConfig = stepsConfig.filter((stepConfig) => !stepConfig.isHidden)
+    if (isEmpty(visibleSteps)) return []
 
-    if (filteredStepsConfig[activeStepNumber]?.getActions) {
-      return filteredStepsConfig[activeStepNumber]
-        .getActions({
-          formState,
-          goToNextStep,
-          goToPreviousStep,
-          onWizardResolve,
-          handleSubmit
-        })
-        .map((action) => <Button {...action} />)
-    } else {
-      return getDefaultActions()
+    const actionsList = getDefaultActions(visibleSteps[activeStepNumber])
+    const allStepsAreEnabled = visibleSteps.every((step) => !step.disabled)
+
+    if (getActions) {
+      const actions = getActions({ allStepsAreEnabled, goToFirstInvalidStep })
+      const mainActions = actions.map((action) => <Button {...action} />)
+      actionsList.push(...mainActions)
     }
+
+    return actionsList
   }
 
   return (
@@ -139,13 +169,12 @@ const Wizard = ({
     >
       <WizardSteps
         activeStepNumber={activeStepNumber}
-        handleSubmit={handleSubmit}
+        firstDisabledStepIdx={firstDisabledStepIdx}
         jumpToStep={jumpToStep}
-        nextStepIsInvalid={nextStepIsInvalid}
-        steps={stepsMenu}
+        steps={visibleSteps}
       />
       <div className="wizard-form__content-container">
-        <div className="wizard-form__content">{activeStepTemplate}</div>
+        <div className="wizard-form__content">{stepsTemplate}</div>
       </div>
     </Modal>
   )
@@ -153,28 +182,26 @@ const Wizard = ({
 
 Wizard.defaultProps = {
   className: '',
+  getActions: null,
   confirmClose: false,
   previewText: '',
   size: MODAL_MD,
   stepsConfig: [],
-  submitButtonLabel: 'Submit',
   subTitle: null
 }
 
 Wizard.propsTypes = {
   className: PropTypes.string,
+  getActions: PropTypes.func,
   confirmClose: PropTypes.bool,
-  formState: PropTypes.object.isRequired,
   isWizardOpen: PropTypes.bool.isRequired,
   location: PropTypes.string.isRequired,
   onWizardResolve: PropTypes.func.isRequired,
-  onWizardSubmit: PropTypes.func.isRequired,
   previewText: PropTypes.string,
   size: MODAL_SIZES,
-  subTitle: PropTypes.string,
-  title: PropTypes.string.isRequired,
   stepsConfig: WIZARD_STEPS_CONFIG,
-  submitButtonLabel: PropTypes.string
+  subTitle: PropTypes.string,
+  title: PropTypes.string.isRequired
 }
 
 Wizard.Step = ({ children }) => children

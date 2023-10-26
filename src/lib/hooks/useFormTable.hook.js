@@ -17,11 +17,11 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { get, omit } from 'lodash'
 import { ARRAY_ERROR } from 'final-form'
 
-export const useFormTable = (formState) => {
+export const useFormTable = (formState, exitEditModeTriggerItem) => {
   // `editingItem` should contain the `data` object with all fields that are used in the `formState`.
   // Properties that aren't used in the `formState` should be placed directly in the `editingItem` object
   // `editingItem` also has an `ui` property which is used internally in this hook
@@ -54,36 +54,46 @@ export const useFormTable = (formState) => {
     formStateRef.current = formState
   }, [formState])
 
-  useEffect(() => {
-    return () => {
-      if (editingItemRef?.current) {
-        if (!editingItemErrorsRef.current) {
-          exitEditMode()
-        } else {
-          if (editingItemRef.current?.ui?.isNew) {
-            const values = get(formStateRef.current.values, editingItemRef.current?.ui.fieldsPath)
+  const applyOrDiscardOrDeleteInEffect = useCallback(() => {
+    if (editingItemRef?.current) {
+      if (!editingItemErrorsRef.current) {
+        exitEditMode()
+      } else {
+        if (editingItemRef.current?.ui?.isNew) {
+          const values = get(formStateRef.current.values, editingItemRef.current?.ui.fieldsPath)
 
-            if (values?.length > 1) {
-              formStateRef.current.form.mutators.remove(
-                editingItemRef.current?.ui.fieldsPath,
-                editingItemRef.current?.ui.index
-              )
-            } else {
-              formStateRef.current.form.change(editingItemRef.current?.ui.fieldsPath, [])
-            }
-          } else {
-            formStateRef.current.form.mutators.update(
+          if (values?.length > 1) {
+            formStateRef.current.form.mutators.remove(
               editingItemRef.current?.ui.fieldsPath,
-              editingItemRef.current?.ui.index,
-              omit(editingItemRef.current, ['ui'])
+              editingItemRef.current?.ui.index
             )
+          } else {
+            formStateRef.current.form.change(editingItemRef.current?.ui.fieldsPath, [])
           }
-
-          exitEditMode()
+        } else {
+          formStateRef.current.form.mutators.update(
+            editingItemRef.current?.ui.fieldsPath,
+            editingItemRef.current?.ui.index,
+            omit(editingItemRef.current, ['ui'])
+          )
         }
+
+        exitEditMode()
       }
     }
   }, [])
+
+  useEffect(() => {
+    if (editingItemRef?.current) {
+      applyOrDiscardOrDeleteInEffect()
+    }
+  }, [applyOrDiscardOrDeleteInEffect, exitEditModeTriggerItem])
+
+  useEffect(() => {
+    return () => {
+      applyOrDiscardOrDeleteInEffect()
+    }
+  }, [applyOrDiscardOrDeleteInEffect])
 
   const addNewRow = (event, fields, fieldsPath, newItem) => {
     applyOrDiscardOrDelete(event)
