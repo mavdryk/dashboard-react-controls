@@ -97,9 +97,11 @@ textarea {
 .link {
   color: $cornflowerBlue;
   cursor: pointer;
+  line-height: 20px;
 
   &:hover {
     text-decoration: underline;
+    text-underline-offset: 3px;
   }
 }
 
@@ -181,7 +183,7 @@ textarea {
     }
 
     &.form-table__row_invalid {
-      background-color: rgba($amaranth, 0.15)
+      background-color: rgba($amaranth, 0.15);
     }
 
     &_multiline {
