@@ -96,6 +96,7 @@ textarea {
 
 .link {
   color: $cornflowerBlue;
+  cursor: pointer;
 
   &:hover {
     text-decoration: underline;
