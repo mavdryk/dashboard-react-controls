@@ -98,8 +98,8 @@ const FormInput = React.forwardRef(
     useEffect(() => {
       setIsInvalid(
         errorsRef.current &&
-        meta.invalid &&
-        (meta.validating || meta.modified || (meta.submitFailed && meta.touched))
+          meta.invalid &&
+          (meta.validating || meta.modified || (meta.submitFailed && meta.touched))
       )
     }, [meta.invalid, meta.modified, meta.submitFailed, meta.touched, meta.validating])
 
@@ -206,14 +206,14 @@ const FormInput = React.forwardRef(
           if (inputProps.max && +valueToValidate > +inputProps.max) {
             validationError = {
               name: 'maxValue',
-              label: `The maximum value should be ${inputProps.max}`
+              label: `The maximum value must be ${inputProps.max}`
             }
           }
 
           if (inputProps.min && +valueToValidate < +inputProps.min) {
             validationError = {
               name: 'minValue',
-              label: `The minimum value should be ${inputProps.min}`
+              label: `The minimum value must be ${inputProps.min}`
             }
           }
         }
