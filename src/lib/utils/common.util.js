@@ -53,13 +53,42 @@ export const areArraysEqual = (firstArray, secondArray, omitBy = []) => {
   )
 }
 
+/**
+ * Get error information from the error object.
+ *
+ * @param {Error} error - The error object.
+ * @returns {string} - The detailed error information.
+ */
 export const getErrorDetail = (error) => {
-  const errorDetail = get(error, 'response.data.detail', '')
+  const errorDetail = get(error, 'response.data.detail', null)
 
   if (typeof errorDetail === 'string') {
     return errorDetail
   } else {
     return get(errorDetail, 'reason', '')
+  }
+}
+
+/**
+ * Get the error message from the error object or a default error message.
+ *
+ * @param {Error} error - The error object.
+ * @param {string} defaultError - The default error message.
+ * @returns {string} - The error message.
+ */
+export const getErrorMsg = (error, defaultError) => {
+  const errorDetail = getErrorDetail(error)
+  const errorMsg = errorDetail || error.message
+
+  if (
+    (!errorMsg ||
+      errorMsg === 'Not Found' ||
+      errorMsg.startsWith('Request failed with status code')) &&
+    defaultError
+  ) {
+    return defaultError
+  } else {
+    return errorMsg || ''
   }
 }
 
