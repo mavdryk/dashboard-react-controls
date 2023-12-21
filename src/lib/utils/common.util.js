@@ -17,7 +17,7 @@ such restriction.
 import { create } from 'react-modal-promise'
 import { differenceWith, isEqual, get, omit, isEmpty } from 'lodash'
 import { ConfirmDialog } from '../components'
-import { SECONDARY_BUTTON, TERTIARY_BUTTON } from '../constants'
+import { DANGER_BUTTON, SECONDARY_BUTTON, TERTIARY_BUTTON } from '../constants'
 
 export const openPopUp = (element, props) => {
   return create(element)(props)
@@ -35,6 +35,22 @@ export const openConfirmPopUp = (confirmHandler, message) => {
       handler: confirmHandler
     },
     header: 'Are you sure?',
+    message
+  })
+}
+
+export const openDeleteConfirmPopUp = (header, message, confirmHandler) => {
+  return openPopUp(ConfirmDialog, {
+    cancelButton: {
+      label: 'Cancel',
+      variant: TERTIARY_BUTTON
+    },
+    confirmButton: {
+      label: 'Delete',
+      variant: DANGER_BUTTON,
+      handler: confirmHandler
+    },
+    header,
     message
   })
 }
