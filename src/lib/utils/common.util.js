@@ -23,7 +23,7 @@ export const openPopUp = (element, props) => {
   return create(element)(props)
 }
 
-export const openConfirmPopUp = (confirmHandler, message) => {
+export const openConfirmPopUp = (message, confirmHandler) => {
   return openPopUp(ConfirmDialog, {
     cancelButton: {
       label: 'Cancel',
