@@ -21,7 +21,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { get, omit } from 'lodash'
 import { ARRAY_ERROR } from 'final-form'
 
-export const useFormTable = (formState, exitEditModeTriggerItem) => {
+export const useFormTable = (formState, exitEditModeTriggerItem, onExitEditModeCallback) => {
   // `editingItem` should contain the `data` object with all fields that are used in the `formState`.
   // Properties that aren't used in the `formState` should be placed directly in the `editingItem` object
   // `editingItem` also has an `ui` property which is used internally in this hook
@@ -44,6 +44,7 @@ export const useFormTable = (formState, exitEditModeTriggerItem) => {
   const editingItemErrorsRef = useRef(null)
   const formStateRef = useRef(null)
   const bottomScrollRef = useRef(null)
+  const onExitEditModeCallbackRef = useRef(onExitEditModeCallback)
 
   useLayoutEffect(() => {
     const tableErrors = get(formState?.errors, editingItem?.ui.fieldsPath, [])
@@ -54,46 +55,61 @@ export const useFormTable = (formState, exitEditModeTriggerItem) => {
     formStateRef.current = formState
   }, [formState])
 
-  const applyOrDiscardOrDeleteInEffect = useCallback(() => {
-    if (editingItemRef?.current) {
-      if (!editingItemErrorsRef.current) {
-        exitEditMode()
-      } else {
-        if (editingItemRef.current?.ui?.isNew) {
-          const values = get(formStateRef.current.values, editingItemRef.current?.ui.fieldsPath)
+  useLayoutEffect(() => {
+    onExitEditModeCallbackRef.current = onExitEditModeCallback
+  }, [onExitEditModeCallback])
 
-          if (values?.length > 1) {
-            formStateRef.current.form.mutators.remove(
-              editingItemRef.current?.ui.fieldsPath,
-              editingItemRef.current?.ui.index
-            )
-          } else {
-            formStateRef.current.form.change(editingItemRef.current?.ui.fieldsPath, [])
+  const exitEditMode = () => {
+    if (editingItemRef.current?.data) {
+      Object.entries(editingItemRef.current?.data).forEach(([fieldName]) => {
+        formStateRef.current?.form.mutators.setFieldState(
+          `${editingItemRef.current?.ui.fieldsPath}[${editingItemRef.current?.ui.index}].data.${fieldName}`,
+          {
+            modified: false
           }
-        } else {
-          formStateRef.current.form.mutators.update(
-            editingItemRef.current?.ui.fieldsPath,
-            editingItemRef.current?.ui.index,
-            omit(editingItemRef.current, ['ui'])
-          )
-        }
+        )
+      })
+    }
 
-        exitEditMode()
+    editingItemRef.current = null
+    setEditingItem(null)
+    onExitEditModeCallbackRef?.current && onExitEditModeCallbackRef.current()
+  }
+
+  useEffect(() => {
+    const applyOrDiscardOrDeleteInEffect = () => {
+      if (editingItemRef?.current) {
+        if (!editingItemErrorsRef.current) {
+          exitEditMode()
+        } else {
+          if (editingItemRef.current?.ui?.isNew) {
+            const values = get(formStateRef.current.values, editingItemRef.current?.ui.fieldsPath)
+
+            if (values?.length > 1) {
+              formStateRef.current.form.mutators.remove(
+                editingItemRef.current?.ui.fieldsPath,
+                editingItemRef.current?.ui.index
+              )
+            } else {
+              formStateRef.current.form.change(editingItemRef.current?.ui.fieldsPath, [])
+            }
+          } else {
+            formStateRef.current.form.mutators.update(
+              editingItemRef.current?.ui.fieldsPath,
+              editingItemRef.current?.ui.index,
+              omit(editingItemRef.current, ['ui'])
+            )
+          }
+
+          exitEditMode()
+        }
       }
     }
-  }, [])
 
-  useEffect(() => {
-    if (editingItemRef?.current) {
-      applyOrDiscardOrDeleteInEffect()
-    }
-  }, [applyOrDiscardOrDeleteInEffect, exitEditModeTriggerItem])
-
-  useEffect(() => {
     return () => {
       applyOrDiscardOrDeleteInEffect()
     }
-  }, [applyOrDiscardOrDeleteInEffect])
+  }, [exitEditModeTriggerItem])
 
   const addNewRow = (event, fields, fieldsPath, newItem) => {
     applyOrDiscardOrDelete(event)
@@ -151,7 +167,6 @@ export const useFormTable = (formState, exitEditModeTriggerItem) => {
     }
 
     exitEditMode()
-
     event && event.stopPropagation()
   }
 
@@ -200,22 +215,6 @@ export const useFormTable = (formState, exitEditModeTriggerItem) => {
         return newEditingItem
       })
     })
-  }
-
-  const exitEditMode = () => {
-    if (editingItemRef.current?.data) {
-      Object.entries(editingItemRef.current?.data).forEach(([fieldName]) => {
-        formStateRef.current?.form.mutators.setFieldState(
-          `${editingItemRef.current?.ui.fieldsPath}[${editingItemRef.current?.ui.index}].data.${fieldName}`,
-          {
-            modified: false
-          }
-        )
-      })
-    }
-
-    editingItemRef.current = null
-    setEditingItem(null)
   }
 
   const scrollIntoView = () => {

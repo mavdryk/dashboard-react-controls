@@ -39,8 +39,7 @@ const convertToLabel = (chars) => {
  * @param {string} chars - characters to convert
  * @returns {string} - converted string
  * @example
- * convertToPattern('a-z A-Z - _ *');
- * // => 'a-zA-Z\-\_\*'
+ * convertToPattern('a-z A-Z - _ *') => 'a-zA-Z\-\_\*'
  */
 const convertToPattern = (chars) => {
   return chars
@@ -254,21 +253,79 @@ const generateRule = {
   }
 }
 
-//const commonRules = {
-// email: [
-//   generateRule.beginEndNotWith('@ .'),
-//   {
-//     name: 'exactlyOne',
-//     label: ValidationConstants.MUST_CONTAIN_EXACTLY_ONE + ': @',
-//     pattern: /^[^@]+@[^@]+$/
-//   },
-//   {
-//     name: 'dotAfterAt',
-//     label: ValidationConstants.MUST_HAVE_DOT_AFTER_AT,
-//     pattern: /@.+\..+$/
-//   }
-// ]
-//}
+const commonRules = {
+  prefixedQualifiedName: [
+    {
+      name: 'nameValidCharacters',
+      label: `[Name] ${ValidationConstants.VALID_CHARACTERS} : a–z, A–Z, 0–9, –, _, .`,
+      pattern: /^([^/]+\/)?[\w.-]+$/
+    },
+    {
+      name: 'nameBeginEnd',
+      label: `[Name] ${ValidationConstants.BEGIN_END_WITH}: a–z, A–Z, 0–9`,
+      pattern: /^([^/]+\/)?([A-Za-z0-9][^/]*)?[A-Za-z0-9]$/
+    },
+    {
+      name: 'nameMaxLength',
+      label: '[Name] Max length - 63 characters',
+      pattern: /^([^/]+\/)?[^/]{1,63}$/
+    },
+    {
+      name: 'prefixValidCharacters',
+      label: `[Prefix] ${ValidationConstants.VALID_CHARACTERS}: a–z, 0–9, –, .`,
+      pattern: /^([a-z0-9.-]+\/)?[^/]+$/
+    },
+    {
+      name: 'prefixBeginEnd',
+      label: `[Prefix] ${ValidationConstants.BEGIN_END_WITH}: a–z, 0–9`,
+      pattern: /^([a-z0-9]([^/]*[a-z0-9])?\/)?[^/]+$/
+    },
+    {
+      name: 'prefixMaxLength',
+      label: '[Prefix] Max length - 253 characters',
+      pattern: /^(?![^/]{254,}\/)/
+    }
+  ],
+  k8sLabels: {
+    value: [
+      {
+        name: 'valueBeginEnd',
+        label: `[Value] ${ValidationConstants.BEGIN_END_WITH} : a–z, A–Z, 0–9`,
+        pattern: /^([^/]+\/)?([A-Za-z0-9][^/]*)?[A-Za-z0-9]$/
+      },
+      {
+        name: 'valueMaxLength',
+        label: '[Value] Max length - 63 characters',
+        pattern: /^([^/]+\/)?[^/]{1,63}$/
+      },
+      {
+        name: 'valueValidCharacters',
+        label: `[Value] ${ValidationConstants.VALID_CHARACTERS}: a–z, A–Z, 0–9, –, _, .`,
+        pattern: /^[a-zA-Z0-9\-_.]+$/
+      }
+    ]
+  }
+  // email: [
+  //   generateRule.beginEndNotWith('@ .'),
+  //   {
+  //     name: 'exactlyOne',
+  //     label: ValidationConstants.MUST_CONTAIN_EXACTLY_ONE + ': @',
+  //     pattern: /^[^@]+@[^@]+$/
+  //   },
+  //   {
+  //     name: 'dotAfterAt',
+  //     label: ValidationConstants.MUST_HAVE_DOT_AFTER_AT,
+  //     pattern: /@.+\..+$/
+  //   }
+  // ]
+}
+
+commonRules.k8sLabels.key = commonRules.prefixedQualifiedName.concat({
+  name: 'prefixNotStart',
+  label: "[Prefix] Must not start with 'kubernetes.io', 'k8s.io'",
+  pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)/
+})
+
 const validationRules = {
   artifact: {
     name: [
@@ -324,7 +381,11 @@ const validationRules = {
       generateRule.endWith('a-z 0-9'),
       generateRule.length({ max: 63 }),
       generateRule.required()
-    ]
+    ],
+    labels: {
+      key: commonRules.k8sLabels.key,
+      value: commonRules.k8sLabels.value
+    }
   },
   environmentVariables: {
     secretName: [

@@ -54,6 +54,7 @@ const FormInput = React.forwardRef(
       onBlur,
       onChange,
       onFocus,
+      onKeyDown,
       pattern,
       required,
       suggestionList,
@@ -160,8 +161,13 @@ const FormInput = React.forwardRef(
     }
     const handleInputFocus = (event) => {
       input.onFocus && input.onFocus(event)
-      onFocus && onFocus()
+      onFocus && onFocus(event)
       setIsFocused(true)
+    }
+
+    const handleInputKeyDown = (event) => {
+      input.onKeyDown && input.onKeyDown(event)
+      onKeyDown && onKeyDown(event)
     }
 
     const handleScroll = (event) => {
@@ -316,6 +322,7 @@ const FormInput = React.forwardRef(
                     }}
                     autoComplete={inputProps.autocomplete ?? 'off'}
                     onBlur={handleInputBlur}
+                    onKeyDown={handleInputKeyDown}
                     onFocus={handleInputFocus}
                   />
                 </div>

@@ -14,7 +14,7 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import { Field, useField } from 'react-final-form'
@@ -65,6 +65,10 @@ const FormTextarea = React.forwardRef(
       withoutBorder && 'without-border'
     )
 
+    useLayoutEffect(() => {
+      setTextAreaCount(input.value.length)
+    }, [input.value.length])
+
     useEffect(() => {
       if (focused) {
         textAreaRef.current.focus()
@@ -84,7 +88,6 @@ const FormTextarea = React.forwardRef(
 
     const handleInputChange = (event) => {
       input.onChange(event)
-      setTextAreaCount(event.target.value.length)
       onChange && onChange(event.target.value)
     }
 

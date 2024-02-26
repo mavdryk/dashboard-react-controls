@@ -37,6 +37,7 @@ const FormChipCellView = React.forwardRef(
       chipOptions,
       chips,
       editConfig,
+      formState,
       handleAddNewChip,
       handleEditChip,
       handleRemoveChip,
@@ -78,7 +79,11 @@ const FormChipCellView = React.forwardRef(
     )
 
     return (
-      <FieldArray name={name} validate={validateFields}>
+      <FieldArray
+        name={name}
+        initialValue={formState.initialValues[name]}
+        validate={validateFields}
+      >
         {({ fields, meta }) => {
           if (
             !isEmpty(validationRules) &&
@@ -94,7 +99,7 @@ const FormChipCellView = React.forwardRef(
                   {fields.map((contentItem, index) => {
                     const chipData = fields.value[index]
                     return (
-                      index < chips.visibleChips.length && (
+                      index < chips.visibleChips?.length && (
                         <div className="chip-block" key={chipData.id}>
                           <Tooltip
                             hidden={editConfig.isEdit}
@@ -203,6 +208,7 @@ FormChipCellView.propTypes = {
   chipOptions: CHIP_OPTIONS,
   chips: PropTypes.object.isRequired,
   editConfig: PropTypes.object.isRequired,
+  formState: PropTypes.object.isRequired,
   handleAddNewChip: PropTypes.func.isRequired,
   handleEditChip: PropTypes.func.isRequired,
   handleRemoveChip: PropTypes.func.isRequired,

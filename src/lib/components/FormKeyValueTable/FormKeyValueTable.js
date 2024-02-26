@@ -38,6 +38,7 @@ const FormKeyValueTable = ({
   keyHeader,
   keyLabel,
   keyOptions,
+  onExitEditModeCallback,
   valueHeader,
   valueLabel
 }) => {
@@ -51,7 +52,7 @@ const FormKeyValueTable = ({
     editingItem,
     enterEditMode,
     isCurrentRowEditing
-  } = useFormTable(formState, exitEditModeTriggerItem)
+  } = useFormTable(formState, exitEditModeTriggerItem, onExitEditModeCallback)
 
   const uniquenessValidator = (fields, newValue) => {
     return !fields.value.some(({ data: { key } }, index) => {
@@ -184,6 +185,7 @@ FormKeyValueTable.defaultProps = {
   keyHeader: 'Key',
   keyLabel: 'Key',
   keyOptions: null,
+  onExitEditModeCallback: () => {},
   valueHeader: 'Value',
   valueLabel: 'Value'
 }
@@ -207,6 +209,7 @@ FormKeyValueTable.propTypes = {
       id: PropTypes.string.isRequired
     })
   ),
+  onExitEditModeCallback: PropTypes.func,
   valueHeader: PropTypes.string,
   valueLabel: PropTypes.string
 }

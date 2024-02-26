@@ -44,6 +44,7 @@ const FormChipCell = ({
   shortChips,
   validationRules,
   validator,
+  onExitEditModeCallback,
   visibleChipsMaxLength
 }) => {
   const chipsClassName = classnames('chips', className)
@@ -140,10 +141,10 @@ const FormChipCell = ({
           .value()
       )
       fields.remove(chipIndex)
-
+      onExitEditModeCallback && onExitEditModeCallback()
       event && event.stopPropagation()
     },
-    [checkChipsList, formState, name]
+    [checkChipsList, formState, name, onExitEditModeCallback]
   )
 
   const handleEditChip = useCallback(
@@ -163,6 +164,7 @@ const FormChipCell = ({
           isValueFocused: false,
           isNewChip: false
         })
+        isChipNotEmpty && onExitEditModeCallback && onExitEditModeCallback()
       } else if (nameEvent === TAB) {
         if (!isChipNotEmpty) {
           handleRemoveChip(event, fields, editConfig.chipIndex)
@@ -170,6 +172,8 @@ const FormChipCell = ({
 
         setEditConfig((prevState) => {
           const lastChipSelected = prevState.chipIndex + 1 > fields.value.length - 1
+
+          isChipNotEmpty && lastChipSelected && onExitEditModeCallback && onExitEditModeCallback()
 
           return {
             chipIndex: lastChipSelected ? null : prevState.chipIndex + 1,
@@ -187,6 +191,11 @@ const FormChipCell = ({
         setEditConfig((prevState) => {
           const isPrevChipIndexExists = prevState.chipIndex - 1 < 0
 
+          isChipNotEmpty &&
+            isPrevChipIndexExists &&
+            onExitEditModeCallback &&
+            onExitEditModeCallback()
+
           return {
             chipIndex: isPrevChipIndexExists ? null : prevState.chipIndex - 1,
             isEdit: !isPrevChipIndexExists,
@@ -200,7 +209,14 @@ const FormChipCell = ({
       checkChipsList(get(formState.values, name))
       event && event.preventDefault()
     },
-    [editConfig.chipIndex, handleRemoveChip, checkChipsList, formState.values, name]
+    [
+      editConfig.chipIndex,
+      checkChipsList,
+      formState.values,
+      name,
+      onExitEditModeCallback,
+      handleRemoveChip
+    ]
   )
 
   const handleToEditMode = useCallback(
@@ -296,6 +312,7 @@ const FormChipCell = ({
           chipOptions={chipOptions}
           chips={chips}
           editConfig={editConfig}
+          formState={formState}
           handleAddNewChip={handleAddNewChip}
           handleEditChip={handleEditChip}
           handleRemoveChip={handleRemoveChip}
