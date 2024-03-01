@@ -23,6 +23,7 @@ import { FormSelect, FormInput, Tooltip, TextTooltipTemplate } from '../../compo
 import { FormActionButton, FormRowActions } from '../../elements'
 
 import { useFormTable } from '../../hooks'
+import { INPUT_VALIDATION_RULES } from '../../types'
 
 const FormKeyValueTable = ({
   actionButtonId,
@@ -38,9 +39,11 @@ const FormKeyValueTable = ({
   keyHeader,
   keyLabel,
   keyOptions,
+  keyValidationRules,
   onExitEditModeCallback,
   valueHeader,
-  valueLabel
+  valueLabel,
+  valueValidationRules
 }) => {
   const tableClassNames = classnames('form-table form-key-value-table', className)
   const {
@@ -56,7 +59,7 @@ const FormKeyValueTable = ({
 
   const uniquenessValidator = (fields, newValue) => {
     return !fields.value.some(({ data: { key } }, index) => {
-      return newValue.trim() === key && index !== editingItem.ui.index
+      return newValue.trim() === key.trim() && index !== editingItem.ui.index
     })
   }
 
@@ -92,6 +95,7 @@ const FormKeyValueTable = ({
                         name={`${rowPath}.data.key`}
                         required={isKeyRequired}
                         validationRules={[
+                          ...keyValidationRules,
                           {
                             name: 'uniqueness',
                             label: 'Name must be unique',
@@ -108,6 +112,7 @@ const FormKeyValueTable = ({
                       density="normal"
                       name={`${rowPath}.data.value`}
                       required={isValueRequired}
+                      validationRules={valueValidationRules}
                     />
                   </div>
                   <FormRowActions
@@ -185,9 +190,11 @@ FormKeyValueTable.defaultProps = {
   keyHeader: 'Key',
   keyLabel: 'Key',
   keyOptions: null,
+  keyValidationRules: [],
   onExitEditModeCallback: () => {},
   valueHeader: 'Value',
-  valueLabel: 'Value'
+  valueLabel: 'Value',
+  valueValidationRules: []
 }
 
 FormKeyValueTable.propTypes = {
@@ -209,9 +216,11 @@ FormKeyValueTable.propTypes = {
       id: PropTypes.string.isRequired
     })
   ),
+  keyValidationRules: INPUT_VALIDATION_RULES,
   onExitEditModeCallback: PropTypes.func,
   valueHeader: PropTypes.string,
-  valueLabel: PropTypes.string
+  valueLabel: PropTypes.string,
+  valueValidationRules: INPUT_VALIDATION_RULES
 }
 
 export default FormKeyValueTable

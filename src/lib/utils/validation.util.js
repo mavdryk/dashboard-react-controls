@@ -31,7 +31,7 @@ import { validation as ValidationConstants } from '../constants'
  * // => 'a–z, A–Z, –, _, *'
  */
 const convertToLabel = (chars) => {
-  return chars.replace(/-/g, '–').replace(/\s/g, ', ').replace(/\bs\b/)
+  return chars.replace(/-/g, '–').replace(/\s/g, ', ').replace(/\bs\b/, 'spaces')
 }
 
 /**
@@ -385,6 +385,10 @@ const validationRules = {
     labels: {
       key: commonRules.k8sLabels.key,
       value: commonRules.k8sLabels.value
+    },
+    params: {
+      key: [generateRule.beginEndNotWith('s')],
+      value: [generateRule.beginEndNotWith('s')]
     }
   },
   environmentVariables: {
