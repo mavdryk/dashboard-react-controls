@@ -21,6 +21,7 @@ import classnames from 'classnames'
 import { createPortal } from 'react-dom'
 
 import { ReactComponent as QuestionMarkIcon } from '../../images/question-mark.svg'
+import { ReactComponent as ExclamationMarkIcon } from '../../images/exclamation-mark.svg'
 
 import './tip.scss'
 import tipStyle from './tip.scss'
@@ -30,7 +31,7 @@ const arrowLength = parseInt(tipStyle.arrowlength)
 const iconLength = parseInt(tipStyle.iconlength)
 const minTextLength = 40
 
-const Tip = ({ className, text }) => {
+const Tip = ({ className, text, withExclamationMark }) => {
   const [isShow, setIsShow] = useState(false)
   const [tipClassName, setTipClassName] = useState('tip_top tip_left')
 
@@ -89,7 +90,11 @@ const Tip = ({ className, text }) => {
   return (
     <div data-testid="tip" className={tipContainerClassNames}>
       <div ref={iconRef} className="tip-wrapper">
-        <QuestionMarkIcon data-testid="tip-icon" />
+        {withExclamationMark ? (
+          <ExclamationMarkIcon data-testid="tip-icon" />
+        ) : (
+          <QuestionMarkIcon data-testid="tip-icon" />
+        )}
       </div>
       {createPortal(
         <CSSTransition in={isShow} timeout={200} classNames="fade" unmountOnExit>

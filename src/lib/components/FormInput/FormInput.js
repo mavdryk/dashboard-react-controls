@@ -29,7 +29,7 @@ import { INPUT_LINK, INPUT_VALIDATION_RULES } from '../../types'
 import { checkPatternsValidity, checkPatternsValidityAsync } from '../../utils/validation.util'
 import { useDetectOutsideClick, useDebounce } from '../../hooks'
 
-import { ReactComponent as InvalidIcon } from '../../images/invalid.svg'
+import { ReactComponent as ExclamationMarkIcon } from '../../images/exclamation-mark.svg'
 import { ReactComponent as Popout } from '../../images/popout.svg'
 import { ReactComponent as WarningIcon } from '../../images/warning.svg'
 
@@ -337,7 +337,7 @@ const FormInput = React.forwardRef(
                         />
                       }
                     >
-                      <InvalidIcon />
+                      <ExclamationMarkIcon />
                     </Tooltip>
                   )}
                   {isInvalid && Array.isArray(errorsRef.current) && (

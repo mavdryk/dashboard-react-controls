@@ -32,7 +32,7 @@ import { COMBOBOX_SELECT_OPTIONS, COMBOBOX_SUGGESTION_LIST } from '../../types'
 import { ReactComponent as Arrow } from '../../images/arrow.svg'
 import { ReactComponent as SearchIcon } from '../../images/search.svg'
 import { ReactComponent as WarningIcon } from '../../images/warning.svg'
-import { ReactComponent as InvalidIcon } from '../../images/invalid.svg'
+import { ReactComponent as ExclamationMarkIcon } from '../../images/exclamation-mark.svg'
 
 import './formCombobox.scss'
 
@@ -445,7 +445,7 @@ const FormCombobox = ({
                   className="form-field__warning"
                   template={<TextTooltipTemplate text={meta.error?.label ?? invalidText} warning />}
                 >
-                  <InvalidIcon />
+                  <ExclamationMarkIcon />
                 </Tooltip>
               )}
               {isInvalid && Array.isArray(meta.error) && (

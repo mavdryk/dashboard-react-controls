@@ -23,7 +23,7 @@ import TextTooltipTemplate from '../TooltipTemplate/TextTooltipTemplate'
 import Tip from '../Tip/Tip'
 import Tooltip from '../Tooltip/Tooltip'
 
-import { ReactComponent as InvalidIcon } from '../../images/invalid.svg'
+import { ReactComponent as ExclamationMarkIcon } from '../../images/exclamation-mark.svg'
 
 import './formTextarea.scss'
 
@@ -146,7 +146,7 @@ const FormTextarea = React.forwardRef(
                       <TextTooltipTemplate text={meta.error?.label ?? invalidText} warning />
                     }
                   >
-                    <InvalidIcon />
+                    <ExclamationMarkIcon />
                   </Tooltip>
                 )}
                 {tip && !required && <Tip text={tip} className="form-field__tip" />}
