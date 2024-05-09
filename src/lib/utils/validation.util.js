@@ -389,6 +389,9 @@ const validationRules = {
     params: {
       key: [generateRule.beginEndNotWith('s')],
       value: [generateRule.beginEndNotWith('s')]
+    },
+    secrets: {
+      key: [generateRule.validCharacters('a-z A-Z 0-9 - _ .')]
     }
   },
   nodeSelectors: {

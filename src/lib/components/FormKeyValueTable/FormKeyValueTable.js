@@ -34,6 +34,7 @@ const FormKeyValueTable = ({
   exitEditModeTriggerItem,
   fieldsPath,
   formState,
+  isKeyEditable,
   isKeyRequired,
   isValueRequired,
   keyHeader,
@@ -43,9 +44,14 @@ const FormKeyValueTable = ({
   onExitEditModeCallback,
   valueHeader,
   valueLabel,
+  valueType,
   valueValidationRules
 }) => {
-  const tableClassNames = classnames('form-table form-key-value-table', className)
+  const tableClassNames = classnames(
+    'form-table form-key-value-table',
+    disabled && 'form-table_disabled',
+    className
+  )
   const {
     addNewRow,
     applyChanges,
@@ -63,6 +69,10 @@ const FormKeyValueTable = ({
     })
   }
 
+  const getKeyTextTemplate = (keyValue) => {
+    return <Tooltip template={<TextTooltipTemplate text={keyValue} />}>{keyValue}</Tooltip>
+  }
+
   return (
     <div className={tableClassNames} data-testid={fieldsPath}>
       <div className="form-table__row form-table__header-row no-hover">
@@ -78,6 +88,7 @@ const FormKeyValueTable = ({
                 'form-table__row',
                 isCurrentRowEditing(rowPath) && 'form-table__row_active'
               )
+
               return editingItem && index === editingItem.ui.index && !disabled ? (
                 <div className={tableRowClassNames} key={index}>
                   <div className="form-table__cell form-table__cell_1">
@@ -87,7 +98,7 @@ const FormKeyValueTable = ({
                         density="normal"
                         options={keyOptions}
                       />
-                    ) : (
+                    ) : isKeyEditable || editingItem.ui.isNew ? (
                       <FormInput
                         className="input_edit"
                         placeholder={keyLabel}
@@ -103,6 +114,8 @@ const FormKeyValueTable = ({
                           }
                         ]}
                       />
+                    ) : (
+                      getKeyTextTemplate(fields.value[index].data.key)
                     )}
                   </div>
                   <div className="form-table__cell form-table__cell_1">
@@ -111,6 +124,7 @@ const FormKeyValueTable = ({
                       placeholder={valueLabel}
                       density="normal"
                       name={`${rowPath}.data.value`}
+                      type={valueType}
                       required={isValueRequired}
                       validationRules={valueValidationRules}
                     />
@@ -128,18 +142,20 @@ const FormKeyValueTable = ({
                 <div
                   className={tableRowClassNames}
                   key={index}
-                  onClick={(event) => enterEditMode(event, fields, fieldsPath, index)}
+                  onClick={(event) => !disabled && enterEditMode(event, fields, fieldsPath, index)}
                 >
                   <div className="form-table__cell form-table__cell_1">
-                    <Tooltip template={<TextTooltipTemplate text={fields.value[index].data.key} />}>
-                      {fields.value[index].data.key}
-                    </Tooltip>
+                    {getKeyTextTemplate(fields.value[index].data.key)}
                   </div>
                   <div className="form-table__cell form-table__cell_1">
                     <Tooltip
-                      template={<TextTooltipTemplate text={fields.value[index].data.value} />}
+                      template={
+                        <TextTooltipTemplate
+                          text={valueType === 'password' ? null : fields.value[index].data.value}
+                        />
+                      }
                     >
-                      {fields.value[index].data.value}
+                      {valueType === 'password' ? '*****' : fields.value[index].data.value}
                     </Tooltip>
                   </div>
                   <FormRowActions
@@ -185,6 +201,7 @@ FormKeyValueTable.defaultProps = {
   defaultKey: '',
   disabled: false,
   exitEditModeTriggerItem: null,
+  isKeyEditable: true,
   isKeyRequired: true,
   isValueRequired: true,
   keyHeader: 'Key',
@@ -194,6 +211,7 @@ FormKeyValueTable.defaultProps = {
   onExitEditModeCallback: () => {},
   valueHeader: 'Value',
   valueLabel: 'Value',
+  valueType: 'text',
   valueValidationRules: []
 }
 
@@ -206,6 +224,7 @@ FormKeyValueTable.propTypes = {
   exitEditModeTriggerItem: PropTypes.any,
   fieldsPath: PropTypes.string.isRequired,
   formState: PropTypes.shape({}).isRequired,
+  isKeyEditable: PropTypes.bool,
   isKeyRequired: PropTypes.bool,
   isValueRequired: PropTypes.bool,
   keyHeader: PropTypes.string,
@@ -220,6 +239,7 @@ FormKeyValueTable.propTypes = {
   onExitEditModeCallback: PropTypes.func,
   valueHeader: PropTypes.string,
   valueLabel: PropTypes.string,
+  valueType: PropTypes.string,
   valueValidationRules: INPUT_VALIDATION_RULES
 }
 
