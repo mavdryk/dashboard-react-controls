@@ -30,7 +30,7 @@ import { validation as ValidationConstants } from '../constants'
  * convertToLabel('a-z A-Z - _ *');
  * // => 'a–z, A–Z, –, _, *'
  */
-const convertToLabel = (chars) => {
+const convertToLabel = chars => {
   return chars.replace(/-/g, '–').replace(/\s/g, ', ').replace(/\bs\b/, 'spaces')
 }
 
@@ -41,10 +41,10 @@ const convertToLabel = (chars) => {
  * @example
  * convertToPattern('a-z A-Z - _ *') => 'a-zA-Z\-\_\*'
  */
-const convertToPattern = (chars) => {
+const convertToPattern = chars => {
   return chars
     .split(' ')
-    .map((patternItem) => (patternItem.length === 1 ? '\\' + patternItem : patternItem))
+    .map(patternItem => (patternItem.length === 1 ? '\\' + patternItem : patternItem))
     .join('')
 }
 
@@ -52,7 +52,7 @@ const convertToPattern = (chars) => {
  * Checks whether there is at least one failed validation rule.
  * @returns {boolean} `true` in case there is at least one failed validation rule, or `false` otherwise.
  */
-const hasInvalidRule = (newRules) => {
+const hasInvalidRule = newRules => {
   return lodash.some(newRules, ['isValid', false])
 }
 
@@ -66,7 +66,7 @@ const hasInvalidRule = (newRules) => {
 
 export const required =
   (validationMsg = 'Required') =>
-  (value) => {
+  value => {
     let isValid = value.trim() !== '' && typeof value === 'string'
     return [isValid, validationMsg]
   }
@@ -85,8 +85,8 @@ export const checkPatternsValidity = (validationRules, value = '', required = tr
     !required && isEmpty(value)
       ? validationRules
       : validationRules
-          .filter((rule) => !rule.async)
-          .map((rule) => {
+          .filter(rule => !rule.async)
+          .map(rule => {
             return {
               ...rule,
               isValid: lodash.isFunction(rule.pattern)
@@ -102,8 +102,8 @@ export const checkPatternsValidityAsync = async (validationRules, value) => {
   const [newRules] = checkPatternsValidity(validationRules, value)
   const asyncRules = await Promise.all(
     validationRules
-      .filter((rule) => rule.async)
-      .map(async (rule) => ({
+      .filter(rule => rule.async)
+      .map(async rule => ({
         ...rule,
         isValid: await rule.pattern(value)
       }))
@@ -115,35 +115,35 @@ export const checkPatternsValidityAsync = async (validationRules, value) => {
 }
 
 const generateRule = {
-  beginWith: (chars) => {
+  beginWith: chars => {
     return {
       name: ValidationConstants.BEGIN_WITH.NAME,
       label: ValidationConstants.BEGIN_WITH.LABEL + ': ' + convertToLabel(chars),
       pattern: new RegExp('^[' + convertToPattern(chars) + ']')
     }
   },
-  beginNotWith: (chars) => {
+  beginNotWith: chars => {
     return {
       name: ValidationConstants.BEGIN_NOT_WITH.NAME,
       label: ValidationConstants.BEGIN_NOT_WITH.LABEL + ': ' + convertToLabel(chars),
       pattern: new RegExp('^[^' + convertToPattern(chars) + ']')
     }
   },
-  endWith: (chars) => {
+  endWith: chars => {
     return {
       name: ValidationConstants.END_WITH.NAME,
       label: ValidationConstants.END_WITH.LABEL + ': ' + convertToLabel(chars),
       pattern: new RegExp('[' + convertToPattern(chars) + ']$')
     }
   },
-  endNotWith: (chars) => {
+  endNotWith: chars => {
     return {
       name: ValidationConstants.END_NOT_WITH.NAME,
       label: ValidationConstants.END_NOT_WITH.LABEL + ': ' + convertToLabel(chars),
       pattern: new RegExp('[^' + convertToPattern(chars) + ']$')
     }
   },
-  beginEndWith: (chars) => {
+  beginEndWith: chars => {
     const convertedPattern = convertToPattern(chars)
 
     return {
@@ -152,7 +152,7 @@ const generateRule = {
       pattern: new RegExp('^([' + convertedPattern + '].*)?[' + convertedPattern + ']$')
     }
   },
-  beginEndNotWith: (chars) => {
+  beginEndNotWith: chars => {
     const convertedPattern = convertToPattern(chars)
 
     return {
@@ -161,7 +161,7 @@ const generateRule = {
       pattern: new RegExp('^([^' + convertedPattern + '].*)?[^' + convertedPattern + ']$')
     }
   },
-  onlyAtTheBeginning: (chars) => {
+  onlyAtTheBeginning: chars => {
     const convertedPattern = convertToPattern(chars)
 
     return {
@@ -170,14 +170,14 @@ const generateRule = {
       pattern: new RegExp('^([' + convertedPattern + '])?[^' + convertedPattern + ']+$')
     }
   },
-  validCharacters: (chars) => {
+  validCharacters: chars => {
     return {
       name: ValidationConstants.VALID_CHARACTERS.NAME,
       label: ValidationConstants.VALID_CHARACTERS.LABEL + ': ' + convertToLabel(chars),
       pattern: new RegExp('^[' + convertToPattern(chars) + ']+$')
     }
   },
-  validCharactersWithPrefix: (chars) => {
+  validCharactersWithPrefix: chars => {
     return {
       name: ValidationConstants.VALID_CHARACTERS_WITH_REFIX.NAME,
       label: ValidationConstants.VALID_CHARACTERS_WITH_REFIX.LABEL + ': ' + convertToLabel(chars),
@@ -186,10 +186,10 @@ const generateRule = {
       )
     }
   },
-  noConsecutiveCharacters: (chars) => {
+  noConsecutiveCharacters: chars => {
     const convertedPattern = chars
       .split(' ')
-      .map((charPair) => {
+      .map(charPair => {
         const charsPairArray = charPair.split('')
 
         return `(?!.*\\${charsPairArray[0]}\\${charsPairArray[1]})`
@@ -202,6 +202,13 @@ const generateRule = {
       pattern: new RegExp('^' + convertedPattern)
     }
   },
+  notContainCharacters: chars => {
+    return {
+      name: ValidationConstants.NOT_CONTAIN.NAME,
+      label: ValidationConstants.NOT_CONTAIN.LABEL + ': ' + convertToLabel(chars),
+      pattern: new RegExp('^[^' + convertToPattern(chars) + ']+$')
+    }
+  },
   maxLengthBetweenDelimiters: (delimiter, maxLength, delimiterDescription) => {
     return {
       name: 'labelsLength',
@@ -209,14 +216,14 @@ const generateRule = {
         delimiterDescription,
         delimiter
       )}: ${maxLength}`,
-      pattern: (value) => {
-        return value.split(delimiter).every((item) => {
+      pattern: value => {
+        return value.split(delimiter).every(item => {
           return item.length >= 1 && item.length <= maxLength
         })
       }
     }
   },
-  mustNotBe: (words) => {
+  mustNotBe: words => {
     const wordsArray = words.split(' ')
 
     return {
@@ -227,7 +234,7 @@ const generateRule = {
       }
     }
   },
-  length: (options) => {
+  length: options => {
     const min = Number.isSafeInteger(options.min) ? options.min : 0
     const max = Number.isSafeInteger(options.max) ? options.max : ''
 
@@ -387,7 +394,7 @@ const validationRules = {
       value: commonRules.k8sLabels.value
     },
     params: {
-      key: [generateRule.beginEndNotWith('s')],
+      key: [generateRule.notContainCharacters('s')],
       value: [generateRule.beginEndNotWith('s')]
     },
     secrets: {

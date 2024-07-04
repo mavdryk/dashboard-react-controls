@@ -42,6 +42,7 @@ export const validation = {
   MUST_HAVE_DOT_AFTER_AT: { LABEL: 'Must have at least one . after @', NAME: 'dotAfterAt' },
   MUST_NOT_BE: { LABEL: 'Must not be', NAME: 'mustNotBe' },
   NO_CONSECUTIVE_CHARACTER: { LABEL: 'No consecutive characters', NAME: 'noConsecutiveCharacters' },
+  NOT_CONTAIN: { LABEL: 'Must not contain', NAME: 'notContainCharacters' },
   ONLY_AT_THE_BEGINNING: { LABEL: 'Only at the beginning', NAME: 'onlyAtTheBeginning' },
   REQUIRED: { LABEL: 'This field is required', NAME: 'required' },
   VALID_CHARACTERS_WITH_REFIX: { LABEL: 'Valid characters', NAME: 'validCharactersWithPrefix' },
