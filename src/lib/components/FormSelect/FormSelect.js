@@ -42,10 +42,11 @@ const FormSelect = ({
   name,
   onChange,
   options,
+  preventWidthOverflow = false,
   required,
+  scrollToView = true,
   search = false,
   selectedItemAction,
-  scrollToView = true,
   tooltip = '',
   withoutBorder = false,
   withSelectedIcon = true
@@ -349,7 +350,7 @@ const FormSelect = ({
                   autoHorizontalPosition: true
                 }}
                 style={{
-                  maxWidth: `${selectWidth < 500 ? 500 : selectWidth}px`,
+                  maxWidth: `${selectWidth < 500 && !preventWidthOverflow ? 500 : selectWidth}px`,
                   minWidth: `${selectWidth}px`
                 }}
               >
@@ -404,12 +405,13 @@ FormSelect.propTypes = {
   disabled: PropTypes.bool,
   hideSelectedOption: PropTypes.bool,
   label: PropTypes.string,
+  multiple: PropTypes.bool,
   name: PropTypes.string.isRequired,
   options: SELECT_OPTIONS.isRequired,
+  preventWidthOverflow: PropTypes.bool,
+  scrollToView: PropTypes.bool,
   search: PropTypes.bool,
   tooltip: PropTypes.string,
-  multiple: PropTypes.bool,
-  scrollToView: PropTypes.bool,
   withoutBorder: PropTypes.bool,
   withSelectedIcon: PropTypes.bool
 }
