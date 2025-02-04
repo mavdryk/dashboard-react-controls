@@ -333,7 +333,15 @@ const validationRules = {
       generateRule.beginEndWith('a-z A-Z 0-9'),
       generateRule.length({ max: 253 }),
       generateRule.required()
-    ]
+    ],
+    labels: {
+      key: [
+        generateRule.notContainCharacters(':'),
+        generateRule.beginEndWith('a-z A-Z 0-9'),
+        generateRule.length({ max: 255 })
+      ],
+      value: [generateRule.beginEndWith('a-z A-Z 0-9'), generateRule.length({ max: 255 })]
+    }
   },
   feature: {
     sets: {
