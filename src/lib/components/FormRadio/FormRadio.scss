@@ -1,19 +1,19 @@
-@import '../../scss/colors';
-@import '../../scss/mixins';
+@use '../../scss/colors';
+@use '../../scss/mixins';
 
 .form-field-radio {
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  color: $primary;
+  color: colors.$primary;
   margin-right: 15px;
 
   &_readonly {
-    @include radioCheckReadonly;
+    @include mixins.radioCheckReadonly;
   }
 
   input[type='radio'] {
-    @include radioCheckField;
+    @include mixins.radioCheckField;
 
     width: 16px;
     height: 16px;

@@ -68,13 +68,37 @@ $wildSand: #f5f5f5;
 $zircon: #fafbff;
 $frenchLilac: #f0e2f6;
 
-:export {
-  amethyst: $amethyst;
-  brightTurquoise: $brightTurquoise;
-  ceriseRed: $ceriseRed;
-  cornflowerBlueTwo: $cornflowerBlueTwo;
-  doveGray: $doveGray;
-  grandis: $grandis;
-  java: $java;
-  mulledWine: $mulledWine;
+:root {
+  --amethystColor: $amethyst;
+  --brightTurquoiseColor: $brightTurquoise;
+  --ceriseRedColor: $ceriseRed;
+  --cornflowerBlueTwoColor: $cornflowerBlueTwo;
+  --doveGrayColor: $doveGray;
+  --grandisColor: $grandis;
+  --javaColor: $java;
+  --mulledWineColor: $mulledWine;
 }
+
+//:export {
+//  amethyst: $amethyst;
+//  brightTurquoise: $brightTurquoise;
+//  ceriseRed: $ceriseRed;
+//  cornflowerBlueTwo: $cornflowerBlueTwo;
+//  doveGray: $doveGray;
+//  grandis: $grandis;
+//  java: $java;
+//  mulledWine: $mulledWine;
+//}
+
+//(?<!\.)(\$(zircon|wildSand|white|topaz|titanWhite|supernova|spunPearl|sorbus|silver|selago|scorpion|saltbox|riverBed|primary|portage|poloBlue|pictonBlue|pharlap|orchid|mulledWineTwo|mulledWineThree|mulledWine|mountainMeadow|mischka|mineshaftTwo|mineshaft|mercury|maroonFlash|malibuTwo|malibu|magnoliaWhite|kimberly|javaTwo|javaLight|java|iron|indigo|hummingBird|hotPink|hawkesBlue|gunsmoke|grandisTwo|grandis|gossamer|ghostWhite|gallery|frenchLilac|ebonyClay|doveGrayTwo|doveGray|darkPurple|cornflowerBlueTwo|cornflowerBlue|chateauGreen|cerulean|ceriseRed|carouselPink|burntSiennaTwo|burntSienna|brightTurquoise|bombay|black|babyPink|athensGray|amethystTwo|amethyst|amaranth|alto|alabaster))
+//colors.$1
+//(?<!\.)(\$(uploadFileIdleBorder|uploadFileDroppedBorder|uploadFileDragOverBorder|transparentBorder|totalBorder|tertiaryBorder|tableRowBorder|secondaryBorder|resultsBorder|runningBorder|primaryBorder|parametersBorder|labelEditBorder|labelBorder|focusBorder|failedBorder|errorBorder|dividerBorder|disabledBorder|completedBorder|applyBtnBorder|activeJobTabBorder))
+//borders.$1
+//(?<!\.)(@include )((tableHeader|tableColumnFlex|tableColumn|tableDet|tableDisplay|stats|statsAddBorderAndTextColor|statusState|schedule|resetSpaces|radioCheckReadonly|radioCheckField|panelTitle|panelSection|newItemSidePanelTable|newItemSidePanel|jobsFlex|jobsFilter|inputSelectField|hiddenChipBlockArrow|gradient|fieldWrapper|fixed|editableChipFont|detailsMetadataStatisticsTable|detailsItem|detailsMetadataStatisticsTable|detailsItem|chipFont|chipDensity|chipBorder|chipBackground|chipButtonAddSize|chipButtonAddBackground|chipButtonAddColor|chipsFont))
+//@include mixins.$2
+//(?<!\.)(\$(tooltipShadow|tablePanelShadow|projectStatisticsShadow|previewBoxShadowInit|previewBoxShadow|mainHeaderShadow|jobsShadow|headerShadow|hiddenChipsBlockShadow|filterShadow|dropdownShadow))
+//shadows.$1
+//(?<!\.)(\$(rowHeightSmall|rowHeight|rowHeightExtended|navbarTogglerWidth|modalBorderRadius|mainBorderRadius|leftRowOffset|headerRowHeightBig|headerRowHeight|headerHeight|heightRowTable|fieldNormal|fieldMedium|fieldDense|fieldChunky|actionsCellWidth|secondaryTextColor|primaryTextColor))
+//variables.$1
+
+

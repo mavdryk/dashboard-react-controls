@@ -16,14 +16,14 @@ such restriction.
 */
 import { create } from 'react-modal-promise'
 import { differenceWith, isEqual, get, omit, isEmpty } from 'lodash'
-import { ConfirmDialog } from '../components'
+import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialog'
 import { DANGER_BUTTON, SECONDARY_BUTTON, TERTIARY_BUTTON } from '../constants'
 
 export const openPopUp = (element, props) => {
   return create(element)(props)
 }
 
-export const openConfirmPopUp = (message, confirmHandler) => {
+export const openConfirmPopUp = (message = 'test', confirmHandler) => {
   return openPopUp(ConfirmDialog, {
     cancelButton: {
       label: 'Cancel',
@@ -128,4 +128,8 @@ export const getTransitionEndEventName = () => {
       return transitions[transition]
     }
   }
+}
+
+export const getScssVariableValue = variableName => {
+  return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim()
 }
