@@ -185,3 +185,5 @@ export const EXCLUDE_SORT_BY = PropTypes.oneOfType([
   PropTypes.number,
   PropTypes.arrayOf(PropTypes.string, PropTypes.number)
 ])
+
+export const DENSITY = PropTypes.oneOf(['dense', 'normal', 'medium', 'chunky'])
